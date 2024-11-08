@@ -1,6 +1,12 @@
 # Woven Weather
-> Outline a brief description of your project.
+> This project is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons. Each hexagon represents one month’s temperature, visualizing extreme lows, highs, and average temperatures.
+
 > Live demo [_here_](https://www.example.com). <!-- If you have the project hosted somewhere, include the link here. -->
+
+![image](https://github.com/user-attachments/assets/f025a15f-ef5a-43f6-9581-efe433c2f50c) ![image](https://github.com/user-attachments/assets/a5f2a77f-908e-41f4-a350-56692c27c481)
+
+---
+## Quick Summary
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -28,6 +34,13 @@
 - Tech 1 - version 1.0
 - Tech 2 - version 2.0
 - Tech 3 - version 3.0
+
+  * **Download** the PEmbroider library [**.ZIP file** for processing 3](distribution/PEmbroider/download/PEmbroider_for_Processing_3.zip) or [for processing 4](distribution/PEmbroider/download/PEmbroider_for_Processing_4.zip)
+* Instructions for [**Getting Started**](#getting-started-with-pembroider-in-processing)
+* Here's a [**Cheat Sheet**](PEmbroider_Cheat_Sheet.md) 
+* Browse the [**Examples**](examples/README.md)
+* Read the [**Full API**](API.md)
+[![Download the PEmbroider Library for Processing](images/download_pembroider_transparent.png)](distribution/PEmbroider/download/PEmbroider_for_Processing_4.zip)
 
 
 ## Features
