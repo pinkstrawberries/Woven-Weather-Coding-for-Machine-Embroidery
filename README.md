@@ -1,5 +1,6 @@
 # Woven Weather
-> This project is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons. Each hexagon represents one month’s temperature, visualizing extreme lows, highs, and average temperatures.
+> **Woven Weather** is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons. Each hexagon, with a centre fill and outer border, represents either the extreme high and low temperatures or the average high and low temperatures of one month. 
+> By using hexagonal embroidery patches, this prototype transforms climate data into something tangible, functional, and visually pleasing. This project not only addresses climate awareness by visually depicting the changes in temperature but also demonstrates the innovative use of technology in traditional textile art.
 
 ## Shortcuts
 * Instructions for [**Setting Up**](#setup) and [**Running**](#usage) this prototype
@@ -26,27 +27,28 @@
 
 ## Motivation
 
-- What is the purpose of your project?
-- Why did you undertake it?
+The purpose of this project is to explore the intersection of environmental data and textile art, presenting climate data in a creative and accessible format. The concept was inspired by temperature blankets—functional pieces that have been used to track yearly temperature variations. However, my project expands on this by using digital tools, such as Processing and the PEmbroider library, to automate the embroidery process. This approach combines the beauty of handmade textiles with modern data science, aiming to make climate information more meaningful and accessible to anyone. My goal is to tell a story about Sydney's changing climate in 2023, through the lens of textile art, while leveraging the efficiency machine embroidery to significantly speed up production compared to traditional hand embroidery methods.
+
+Colours have always been an effective was to represent varying temperatures, so applying this concept to textile design is a natural progression to me.
 
 ![Global Temperatures Over Time](https://github.com/user-attachments/assets/99dba175-a978-4a1d-ac66-338cf3288914)
 
 
 ### Design Inspiration
 
-A variety of design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
+> A variety of design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
 
 A Crotcheted 2020 Temperature Blanket by Kaz Hall
 
-![2020 Temperature Blanket by Kaz Hall](https://github.com/user-attachments/assets/02292de6-e2b2-4b3f-b959-f9e59933aea8)
+> ![2020 Temperature Blanket by Kaz Hall](https://github.com/user-attachments/assets/02292de6-e2b2-4b3f-b959-f9e59933aea8)
 
 A Crotcheted Hexagon Temperature Blanket
 
-![Crocheted Hexagon Blanket](https://github.com/user-attachments/assets/759fbca3-74a5-4ed5-a7f1-e6e677844596)
+> ![Crocheted Hexagon Blanket](https://github.com/user-attachments/assets/759fbca3-74a5-4ed5-a7f1-e6e677844596)
 
 A Hand Embroidered Circular Temperature Blanket
 
-![Embroidered Temperature Blanket](https://github.com/user-attachments/assets/13753a3d-0952-4969-ac43-f0d7a54fe0e4)
+> ![Embroidered Temperature Blanket](https://github.com/user-attachments/assets/13753a3d-0952-4969-ac43-f0d7a54fe0e4)
 
 ## Technologies Used
 
@@ -71,10 +73,21 @@ A Hand Embroidered Circular Temperature Blanket
  ![Embroidery Thread Colours](https://github.com/user-attachments/assets/654a74ba-03f6-4807-bbd6-ea1d9ce1c39f)
 
 ## Features
-List the ready features here:
-- Awesome feature 1
-- Awesome feature 2
-- Awesome feature 3
+
+**Woven Weather** includes the following key features:
+
+* **Automated Embroidery of Temperature Data**: Using Processing and the PEmbroider library, this project automates the translation of climate data into embroidery patterns, making the process very efficient.
+* **Climate Visual Representation**: Each embroidered hexagon represents a month, showcasing average and extreme temperatures using color codes inspired by temperature blankets.
+* **Seasonal Stitch Patterns**: Different stitch styles for both the border and centre of the hexagon were integrated to reflect seasonal changes, applying specific patterns to seasons based on their unique characteristics.
+
+* **Automated Embroidery of Temperature Data**: Using Processing and the PEmbroider library, this project automates the translation of climate data into embroidery patterns, making the process very efficient.
+* **Assigning Colours to the Temperature Data**: Each hexagon in this project visualises temperature data from Sydney 2023, using a colour code ranging from cool blues and purples for lower temperatures to warm oranges and reds for higher temperatures. The colors are applied through the embroidery machine's instructions, which are converted from Processing code.
+
+* **Multilayered Polygon Generation**: The prototype generates consistent, uniform hexagons through trigonometric calculations, a shape that is currently missing from the PEmbroider library [**Examples**](examples/README.md). These hexagons are sized and positioned to fit neatly within a 4x4-inch embroidery hoop, balancing the aesthetics and ensuring effective use of space.
+
+* **Seasonal Stitch Integration**: Eight different types of stitches were integrated to convey seasonal changes. These include combinations of border and center stitches to symbolise the unique characteristics of each season, such as zigzag stitches for summer to represent the crazy heat and cross-stitches for winter, kind of reminiscent of snowflakes.
+
+* **Alignment Dots for Accuracy**: To make sure there was precise stitching during assembly of the full prototype, alignment dots are added around each set of four hexagons. These dots are used for positioning the fabric correctly during the embroidery process, when the design as to be split into separate code due too limitations of the embroidery hoop size. Multiple functions were implemented for embroidering and printing these alignment dots to ensure consistency.
 
 
 ## Setup
