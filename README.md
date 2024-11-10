@@ -1,6 +1,9 @@
 # Woven Weather
-> **Woven Weather** is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons. Each hexagon, with a centre fill and outer border, represents either the extreme high and low temperatures or the average high and low temperatures of one month. 
-> By using hexagonal embroidery patches, this prototype transforms climate data into something tangible, functional, and visually pleasing. This project not only addresses climate awareness by visually depicting the changes in temperature but also demonstrates the innovative use of technology in traditional textile art.
+**Woven Weather** is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons.
+
+Each hexagon, with a centre fill and outer border, represents either the extreme high and low temperatures or the average high and low temperatures of one month. By using hexagonal embroidery patches, this prototype transforms climate data into something tangible, functional, and visually pleasing.
+
+This project not only addresses climate awareness by visually depicting the changes in temperature but also demonstrates the innovative use of technology in traditional textile art.
 
 ## Shortcuts
 * Instructions for [**Setting Up**](#setup) and [**Running**](#usage) this prototype
@@ -10,7 +13,6 @@
 ---
 
 ## Table of Contents
-* [General Info](#general-information)
 * [Motivation](#motivation)
 * [Technologies Used](#technologies-used)
 * [Features](#features)
@@ -21,32 +23,34 @@
 * [Screenshots](#screenshots)
 * [Sources](#sources)
 
-## General Information
-- Provide general information about your project here.
-- What problem does it (intend to) solve?
-
 ## Motivation
 
-The purpose of this project is to explore the intersection of environmental data and textile art, presenting climate data in a creative and accessible format. The concept was inspired by temperature blankets—functional pieces that have been used to track yearly temperature variations. However, my project expands on this by using digital tools, such as Processing and the PEmbroider library, to automate the embroidery process. This approach combines the beauty of handmade textiles with modern data science, aiming to make climate information more meaningful and accessible to anyone. My goal is to tell a story about Sydney's changing climate in 2023, through the lens of textile art, while leveraging the efficiency machine embroidery to significantly speed up production compared to traditional hand embroidery methods.
+The purpose of this project is to explore the intersection of environmental data and textile art, presenting climate data in a creative and accessible format. The concept was inspired by temperature blankets—functional pieces that have been used to track yearly temperature variations. 
 
-Colours have always been an effective was to represent varying temperatures, so applying this concept to textile design is a natural progression to me.
+However, my project expands on this by using digital tools, such as Processing and the PEmbroider library, to automate the embroidery process. This approach combines the beauty of handmade textiles with modern data science, aiming to make climate information more meaningful and accessible to anyone. 
 
-![Global Temperatures Over Time](https://github.com/user-attachments/assets/99dba175-a978-4a1d-ac66-338cf3288914)
+My goal is to tell a story about Sydney's changing climate in 2023, through the lens of textile art, while leveraging the efficiency machine embroidery to significantly speed up production compared to traditional hand embroidery methods.
 
+
+> Colours have always been an effective was to represent varying temperatures, so applying this concept to textile design is a natural progression to me.
+
+> ![Global Temperatures Over Time](https://github.com/user-attachments/assets/99dba175-a978-4a1d-ac66-338cf3288914)
+
+---
 
 ### Design Inspiration
 
-> A variety of design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
+* A variety of design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
 
-A Crotcheted 2020 Temperature Blanket by Kaz Hall
+* A Crotcheted 2020 Temperature Blanket by Kaz Hall
 
 > ![2020 Temperature Blanket by Kaz Hall](https://github.com/user-attachments/assets/02292de6-e2b2-4b3f-b959-f9e59933aea8)
 
-A Crotcheted Hexagon Temperature Blanket
+* A Crotcheted Hexagon Temperature Blanket
 
 > ![Crocheted Hexagon Blanket](https://github.com/user-attachments/assets/759fbca3-74a5-4ed5-a7f1-e6e677844596)
 
-A Hand Embroidered Circular Temperature Blanket
+* A Hand Embroidered Circular Temperature Blanket
 
 > ![Embroidered Temperature Blanket](https://github.com/user-attachments/assets/13753a3d-0952-4969-ac43-f0d7a54fe0e4)
 
@@ -56,14 +60,18 @@ A Hand Embroidered Circular Temperature Blanket
 
 ![image](https://github.com/user-attachments/assets/52eff832-b7b1-442e-afa8-25027081c886)
 * Python- Version 3.12.5
+  
 ![image](https://github.com/user-attachments/assets/c383ad88-3e3c-49fa-bc47-03d2d83e6c84)
 * Processing - Version 4.3
+  
 ![image](https://github.com/user-attachments/assets/45f195f1-823d-41ac-b436-ecc5eb3a229f)
 * PEmbroider Library - Last Updated 3 Years Ago
+  
 ![image](https://github.com/user-attachments/assets/d1f46884-b1d4-4b09-bb6e-4e4f6c166346)
 * Brother Computerized Sewing and Embroidery Machine with 4" x 4" Embroidery Area - Model SE425 
 
 ### Materials
+
 * Embroidery Thread - SimThread 63 Spools Polyester Embroidery Thread
 * Cotton/Poplin white fabric (not too thick or stretchy)
 * Tear-away fabric backing for machine embroidery
@@ -77,10 +85,7 @@ A Hand Embroidered Circular Temperature Blanket
 **Woven Weather** includes the following key features:
 
 * **Automated Embroidery of Temperature Data**: Using Processing and the PEmbroider library, this project automates the translation of climate data into embroidery patterns, making the process very efficient.
-* **Climate Visual Representation**: Each embroidered hexagon represents a month, showcasing average and extreme temperatures using color codes inspired by temperature blankets.
-* **Seasonal Stitch Patterns**: Different stitch styles for both the border and centre of the hexagon were integrated to reflect seasonal changes, applying specific patterns to seasons based on their unique characteristics.
-
-* **Automated Embroidery of Temperature Data**: Using Processing and the PEmbroider library, this project automates the translation of climate data into embroidery patterns, making the process very efficient.
+  
 * **Assigning Colours to the Temperature Data**: Each hexagon in this project visualises temperature data from Sydney 2023, using a colour code ranging from cool blues and purples for lower temperatures to warm oranges and reds for higher temperatures. The colors are applied through the embroidery machine's instructions, which are converted from Processing code.
 
 * **Multilayered Polygon Generation**: The prototype generates consistent, uniform hexagons through trigonometric calculations, a shape that is currently missing from the PEmbroider library [**Examples**](examples/README.md). These hexagons are sized and positioned to fit neatly within a 4x4-inch embroidery hoop, balancing the aesthetics and ensuring effective use of space.
