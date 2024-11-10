@@ -1,12 +1,12 @@
 # Woven Weather
 > This project is a combination of digital embroidery and data visualisation that converts Sydney’s 2023 temperature data into an artistic representation through embroidered hexagons. Each hexagon represents one month’s temperature, visualizing extreme lows, highs, and average temperatures.
 
-
----
 ## Shortcuts
 * Instructions for [**Setting Up**](#setup) and [**Running**](#usage) this prototype
 * Explore the source code for the prototype (include something)
 * Read the [**Acknowledgements and References**](#sources) for this project
+
+---
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -34,7 +34,7 @@
 
 ### Design Inspiration
 
-Many design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
+A variety of design examples are on this website: [Stunning Crochet Temperature Blankets](https://patterncenter.com/crochet-temperature-blankets/)
 
 A Crotcheted 2020 Temperature Blanket by Kaz Hall
 
@@ -51,10 +51,15 @@ A Hand Embroidered Circular Temperature Blanket
 ## Technologies Used
 
 ### Technologies
-* Python- Version 3.12.5 ![image](https://github.com/user-attachments/assets/52eff832-b7b1-442e-afa8-25027081c886)
-* Processing - Version 4.3 ![image](https://github.com/user-attachments/assets/c383ad88-3e3c-49fa-bc47-03d2d83e6c84)
-* PEmbroider Library - Last Updated 3 Years Ago ![image](https://github.com/user-attachments/assets/45f195f1-823d-41ac-b436-ecc5eb3a229f)
-* Brother Computerized Sewing and Embroidery Machine with 4" x 4" Embroidery Area - Model SE425 ![image](https://github.com/user-attachments/assets/d1f46884-b1d4-4b09-bb6e-4e4f6c166346)
+
+![image](https://github.com/user-attachments/assets/52eff832-b7b1-442e-afa8-25027081c886)
+* Python- Version 3.12.5
+![image](https://github.com/user-attachments/assets/c383ad88-3e3c-49fa-bc47-03d2d83e6c84)
+* Processing - Version 4.3
+![image](https://github.com/user-attachments/assets/45f195f1-823d-41ac-b436-ecc5eb3a229f)
+* PEmbroider Library - Last Updated 3 Years Ago
+![image](https://github.com/user-attachments/assets/d1f46884-b1d4-4b09-bb6e-4e4f6c166346)
+* Brother Computerized Sewing and Embroidery Machine with 4" x 4" Embroidery Area - Model SE425 
 
 ### Materials
 * Embroidery Thread - SimThread 63 Spools Polyester Embroidery Thread
@@ -89,6 +94,7 @@ OR
 * Create a free account on [Visual Crossing](https://www.visualcrossing.com/sign-up)
 * Enter a query on their [Weather API](https://www.visualcrossing.com/weather/weather-data-services/Sydney?v=api) service for the location (Sydney)
 * Now your website should look like this:
+
 ![Visual Crossing API](https://github.com/user-attachments/assets/e57fa423-664c-4163-83b5-a435123a9bd9)
 * Copy the generated code for Python and paste it into a new Sketch file
 
@@ -139,16 +145,17 @@ Project is in progress, having only embroidered 12 out of 24 hexagons, due to ti
 
 ### Borders and Grids
 
-* Perhaps adding borders, grids or other design elements would benefit the prototype's aesthetic. For example, having a thin border around each month (vertical pair of hexagons) could provide an opportunity to add seasonal motifs. E.g. summer: the border could have shining sun rays or water in simple lines, autumn: cascading leaves around the border, spring: flowers blooming out of the border, winter: clouds/snow or other winter motifs attached to the border.
+* Perhaps adding borders, grids or other design elements would benefit the prototype's aesthetic. For example, having a thin border around each month (vertical pair of hexagons) could provide an opportunity to add seasonal motifs.
+* E.g. summer: the border could have shining sun rays or water in simple lines, autumn: cascading leaves around the border, spring: flowers blooming out of the border, winter: clouds/snow or other winter motifs attached to the border.
 * From exploring PEmbroider, I would likely build on from these examples:
-### PEmbroider_lines_1
+#### PEmbroider_lines_1
 Lines with varying stroke weight. Lines with varying stroke spacing.
 Lines with varying stitch lengths. Lines with tangent versus parallel stitches.
 [![](PEmbroider_lines_1/documentation/PEmbroider_lines_1_photo.png)](PEmbroider_lines_1/)
-### PEmbroider_lines_2
+#### PEmbroider_lines_2
 Curves and line segments.
 [![](PEmbroider_lines_2/documentation/PEmbroider_lines_2_photo.png)](PEmbroider_lines_2/)
-### PEmbroider_ruler
+#### PEmbroider_ruler
 Test your units. 
 [![](PEmbroider_ruler/PEmbroider_ruler_photo.png)](PEmbroider_ruler/)
 
@@ -156,17 +163,17 @@ Test your units.
 
 * Adding text would make the design more easily understandable, especially if each month was labelled or if in the corner it stated "Sydney 2023" to be specific on what the blanket is based off.
 * After exploring PEmbroider, I would rely on these resources
-### PEmbroider_text_1
+#### PEmbroider_text_1
 High-quality stroked and/or filled letterforms, from TrueType fonts.
 [![](PEmbroider_text_1/PEmbroider_text_1_photo.png)](PEmbroider_text_1/)
-### PEmbroider_text_2
+#### PEmbroider_text_2
 Options for high-quality type alignment (baseline, ascent, descent; left, center, right). 
 [![](PEmbroider_text_2/PEmbroider_text_2.png)](PEmbroider_text_2/)
 [![](PEmbroider_text_2/PEmbroider_text_2_photo.png)](PEmbroider_text_2/)
-### PEmbroider_text_3
+#### PEmbroider_text_3
 Built-in implmentations of [Hershey fonts](https://en.wikipedia.org/wiki/Hershey_fonts) (single-stroke vector fonts) for quick embroidered typography without font rasterization. 
 [![](PEmbroider_text_3/PEmbroider_text_3_photo.png)](PEmbroider_text_3/)
-### PEmbroider_optimize_per_char
+#### PEmbroider_optimize_per_char
 Demonstration of an optional feature which optimizes the embroidery of filled text on a per-character basis.
 [![](PEmbroider_optimize_per_char/documentation/PEmbroider_optimize_per_char.png)](PEmbroider_optimize_per_char/)
 
