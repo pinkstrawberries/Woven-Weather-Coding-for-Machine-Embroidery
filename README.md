@@ -5,6 +5,13 @@ Each hexagon, with a centre fill and outer border, represents either the extreme
 
 This project not only addresses climate awareness by visually depicting the changes in temperature but also demonstrates the innovative use of technology in traditional textile art.
 
+![Final 365 hexagons](https://github.com/user-attachments/assets/f7a2eaeb-17d9-4b8f-b942-92a97d61c778)
+![Final alignment and hexagon next to each other](https://github.com/user-attachments/assets/4063303f-8fb3-4485-bf54-b7c67368df0a)
+![v6 24 hexagons](https://github.com/user-attachments/assets/12e3df54-e7d6-413e-b791-bfe323a0d75f)
+![IMG_6280](https://github.com/user-attachments/assets/47dfb4d6-39df-423f-9d7e-99c0b06d4ce4)
+![IMG_6286](https://github.com/user-attachments/assets/a2a278c4-6680-47d4-83b4-925643124b88)
+
+
 ## Shortcuts
 * Instructions for [**Setting Up**](#setup) and [**Running**](#usage) this prototype
 * Explore the source code for the prototype
