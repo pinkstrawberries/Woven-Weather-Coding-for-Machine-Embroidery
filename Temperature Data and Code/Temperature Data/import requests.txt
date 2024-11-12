@@ -1,0 +1,31 @@
+import requests
+import json
+
+# Replace "YOUR_API_KEY" with your actual API key from Visual Crossing
+api_key = "FD3B3JJHQQF8GVX5K9FZVXCHA"
+location = "Sydney"
+start_date = "2023-01-01"
+end_date = "2023-12-31"
+
+# Construct the API URL
+url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}/{start_date}/{end_date}?unitGroup=metric&include=days&key={FD3B3JJHQQF8GVX5K9FZVXCHA}&contentType=json"
+
+# Make the request to get data
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    data = response.json()
+    
+    # Save the data to a file
+    with open('sydney_temperature_2023.json', 'w') as outfile:
+        json.dump(data, outfile, indent=4)
+        
+    # Example: Print daily temperatures
+    for day in data['days']:
+        date = day['datetime']
+        high = day['tempmax']
+        low = day['tempmin']
+        print(f"{date}: High {high}°C, Low {low}°C")
+else:
+    print("Error:", response.status_code, response.text)

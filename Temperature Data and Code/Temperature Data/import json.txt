@@ -1,0 +1,39 @@
+import json
+
+# Load the temperature data from the JSON file
+with open('sydney_temperature_2023.json', 'r') as file:
+    data = json.load(file)
+
+# Extract the temperatures for January and February
+january_temps = []
+february_temps = []
+
+for day in data['days']:
+    date = day['datetime']
+    if date.startswith("2023-01"):
+        january_temps.append((day['tempmin'], day['tempmax']))
+    elif date.startswith("2023-02"):
+        february_temps.append((day['tempmin'], day['tempmax']))
+
+# Calculate extreme and average temperatures for January
+january_extreme_low = min(temp[0] for temp in january_temps)
+january_extreme_high = max(temp[1] for temp in january_temps)
+january_average_low = sum(temp[0] for temp in january_temps) / len(january_temps)
+january_average_high = sum(temp[1] for temp in january_temps) / len(january_temps)
+
+# Calculate extreme and average temperatures for February
+february_extreme_low = min(temp[0] for temp in february_temps)
+february_extreme_high = max(temp[1] for temp in february_temps)
+february_average_low = sum(temp[0] for temp in february_temps) / len(february_temps)
+february_average_high = sum(temp[1] for temp in february_temps) / len(february_temps)
+
+# Print the results
+print("January Extreme Low:", january_extreme_low)
+print("January Extreme High:", january_extreme_high)
+print("January Average Low:", january_average_low)
+print("January Average High:", january_average_high)
+
+print("February Extreme Low:", february_extreme_low)
+print("February Extreme High:", february_extreme_high)
+print("February Average Low:", february_average_low)
+print("February Average High:", february_average_high)
