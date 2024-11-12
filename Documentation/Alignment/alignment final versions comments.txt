@@ -1,0 +1,699 @@
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing
+  background(255); // Set background to white for better printing contrast
+
+  // Initialize PEmbroiderGraphics
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Alignment_Dots.vp3");
+  String pesOutputFilePath = sketchPath("Alignment_Dots.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file with the correct name
+
+  // Begin drawing the embroidery
+  E.beginDraw();
+  E.clear();
+
+  // Draw alignment dots with PEmbroider
+  addAlignmentDots();
+
+  E.optimize(); // Slow but necessary for good output
+  E.endDraw(); // Write the embroidery file
+  E.visualize();
+
+  // Draw the same dots to the main canvas for saving as PNG
+  addAlignmentDotsForPrint();
+
+  // Save the visual representation as PNG
+  save("Alignment_Dots_Printable.png");
+}
+
+void addAlignmentDots() {
+  float dotSize = 5; // Size of each alignment dot
+  E.strokeWeight(2); // Set the stitch thickness for the dots
+
+  // Alignment dots for the hexagons
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagonE(x1, y1);
+  addFourDotsAroundHexagonE(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagonE(x2, y2);
+  addFourDotsAroundHexagonE(x2, y2 + 450); // Below the second hexagon
+}
+
+void addAlignmentDotsForPrint() {
+  float dotSize = 5; // Size of each alignment dot
+
+  // Alignment dots for the hexagons (for print)
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagonPrint(x1, y1);
+  addFourDotsAroundHexagonPrint(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagonPrint(x2, y2);
+  addFourDotsAroundHexagonPrint(x2, y2 + 450); // Below the second hexagon
+}
+
+void addFourDotsAroundHexagonE(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  // Top left
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+void addFourDotsAroundHexagonPrint(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  stroke(0);
+  strokeWeight(2);
+  fill(0);
+
+  // Top left
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of the hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing for alignment dots and hexagons
+  background(255); // Set background to white for better printing contrast
+
+  // Initialize PEmbroiderGraphics object to control the embroidery design
+  E = new PEmbroiderGraphics(this, width, height);
+  
+  // Define output paths for VP3 and PES formats, as used by the Brother SE425 Embroidery Machine
+  String outputFilePath = sketchPath("Alignment_Dots.vp3"); // Save as VP3 file format
+  String pesOutputFilePath = sketchPath("Alignment_Dots.pes"); // Save as PES file format (used by SE425)
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Set PES output path
+
+  // Begin the embroidery drawing process
+  E.beginDraw(); // Start drawing the embroidery; sourced from PEmbroider library
+  E.clear(); // Clear any previous content from the embroidery canvas
+
+  // Draw alignment dots to be embroidered for use in positioning the fabric correctly
+  addAlignmentDots(); // Function to add alignment dots using PEmbroider
+
+  E.optimize(); // Optimize embroidery output; sourced from PEmbroider library (slow but essential for high-quality stitch output)
+  E.endDraw(); // End the embroidery drawing process and save to file
+  E.visualize(); // Visualize the embroidery design, showing the arrangement of stitches
+
+  // Draw the alignment dots to the main canvas for saving as a printable PNG
+  addAlignmentDotsForPrint(); // Function to add alignment dots for printable use (not embroidery)
+
+  // Save the visual representation of alignment dots as a PNG file
+  save("Alignment_Dots_Printable.png");
+}
+
+// Function to add alignment dots for embroidery using PEmbroider
+void addAlignmentDots() {
+  float dotSize = 5; // Set the size of each alignment dot
+  E.strokeWeight(2); // Set the stitch thickness for the dots to make them more visible
+
+  // First hexagon pair - Top Left (Positioned at (250, 250))
+  float x1 = 250; // X-coordinate for the first pair of hexagons
+  float y1 = 250; // Y-coordinate for the first hexagon
+
+  // Add four dots around the top hexagon at (x1, y1)
+  addFourDotsAroundHexagonE(x1, y1);
+  
+  // Add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing)
+  addFourDotsAroundHexagonE(x1, y1 + 450);
+
+  // Second hexagon pair - Top Right (Positioned at (700, 250))
+  float x2 = 700; // X-coordinate for the second pair of hexagons
+  float y2 = 250; // Y-coordinate for the first hexagon in the second pair
+
+  // Add four dots around the top hexagon at (x2, y2)
+  addFourDotsAroundHexagonE(x2, y2);
+
+  // Add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing)
+  addFourDotsAroundHexagonE(x2, y2 + 450);
+}
+
+// Function to add alignment dots for printable use (not embroidery)
+void addAlignmentDotsForPrint() {
+  float dotSize = 5; // Set the size of each alignment dot for print
+
+  // First hexagon pair - Top Left (Positioned at (250, 250))
+  float x1 = 250; // X-coordinate for the first pair of hexagons
+  float y1 = 250; // Y-coordinate for the first hexagon
+
+  // Add four dots around the top hexagon at (x1, y1) for printing
+  addFourDotsAroundHexagonPrint(x1, y1);
+  
+  // Add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x1, y1 + 450);
+
+  // Second hexagon pair - Top Right (Positioned at (700, 250))
+  float x2 = 700; // X-coordinate for the second pair of hexagons
+  float y2 = 250; // Y-coordinate for the first hexagon in the second pair
+
+  // Add four dots around the top hexagon at (x2, y2) for printing
+  addFourDotsAroundHexagonPrint(x2, y2);
+
+  // Add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x2, y2 + 450);
+}
+
+// Function to add four alignment dots around a hexagon using PEmbroider (for embroidery)
+void addFourDotsAroundHexagonE(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon, taking into account radius and border thickness
+  float dotSize = 5; // Size of each alignment dot for embroidery
+
+  // Draw dots around the hexagon using PEmbroider (E.ellipse)
+  // Top left dot
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Top right dot
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left dot
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right dot
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+// Function to add four alignment dots around a hexagon for printing (not embroidery)
+void addFourDotsAroundHexagonPrint(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon, same as in embroidery version
+  float dotSize = 5; // Size of each alignment dot for printing
+
+  // Set stroke properties for dots to be printed
+  stroke(0); // Black outline for dots
+  strokeWeight(2); // Thickness of the outline
+  fill(0); // Fill the dots with black color
+
+  // Draw dots around the hexagon using Processing ellipse function (for printing)
+  // Top left dot
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Top right dot
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left dot
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right dot
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+JSONObject temperatureData;
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("August_and_September.vp3");
+  String pesOutputFilePath = sketchPath("August_and_September.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file with the correct name
+
+  // Load the temperature data from JSON file
+  temperatureData = loadJSONObject("sydney_temperature_2023.json");
+
+  E.beginDraw();
+  E.clear();
+
+  // Draw the hexagons with temperatures from JSON data
+  drawMonthlyHexagons("2023-08", 250, 250); // August (Top Left)
+  drawMonthlyHexagons("2023-09", 700, 250); // September (Top Right)
+
+  E.optimize(); // Slow but necessary for good output
+  E.endDraw(); // Write the embroidery file
+  E.visualize();
+}
+
+void drawMonthlyHexagons(String monthPrefix, float cx, float cy) {
+  // Extract temperature data from JSON
+  JSONArray days = temperatureData.getJSONArray("days");
+  float extremeLow = Float.MAX_VALUE;
+  float extremeHigh = Float.MIN_VALUE;
+  float sumHigh = 0;
+  float sumLow = 0;
+  int count = 0;
+
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+
+    if (date.startsWith(monthPrefix)) {
+      float tempMax = day.getFloat("tempmax");
+      float tempMin = day.getFloat("tempmin");
+
+      if (tempMax > extremeHigh) extremeHigh = tempMax;
+      if (tempMin < extremeLow) extremeLow = tempMin;
+
+      sumHigh += tempMax;
+      sumLow += tempMin;
+      count++;
+    }
+  }
+
+  float averageHigh = sumHigh / count;
+  float averageLow = sumLow / count;
+
+  // Draw the hexagons for the given month (extremes and averages)
+  drawHexagonWithBorder(cx, cy, getSeason(monthPrefix), "extreme", extremeLow, extremeHigh); // Extreme Low and High
+  drawHexagonWithBorder(cx, cy + 450, getSeason(monthPrefix), "average", averageLow, averageHigh); // Average Low and High
+}
+
+String getSeason(String month) {
+  switch(month) {
+    case "2023-03":
+    case "2023-04":
+    case "2023-05":
+      return "Autumn";
+    case "2023-06":
+    case "2023-07":
+    case "2023-08":
+      return "Winter";
+    case "2023-09":
+    case "2023-10":
+    case "2023-11":
+      return "Spring";
+    case "2023-12":
+    case "2023-01":
+    case "2023-02":
+      return "Summer";
+    default:
+      return "";
+  }
+}
+
+void drawHexagonWithBorder(float cx, float cy, String season, String type, float temperatureLow, float temperatureHigh) {
+  // Draw the border hexagon
+  E.noFill();
+  E.stroke(0);
+  E.strokeWeight(borderThickness);
+  E.strokeMode(PEmbroiderGraphics.PERPENDICULAR);
+  E.strokeSpacing(4);
+  
+  if (season.equals("Autumn")) {
+    // Running stitch in a wavy pattern for autumn border
+    E.setStitch(8, 16, 0.5);
+    E.hatchMode(PEmbroiderGraphics.PARALLEL);
+    E.hatchAngleDeg(30); // Angled offset for a falling leaves impression
+  } else if (season.equals("Winter")) {
+    // Cross-stitch or straight stitch with snowflake-like details for winter border
+    E.setStitch(6, 12, 0.2);
+    E.hatchMode(PEmbroiderGraphics.PERPENDICULAR); // Corrected to use PEmbroiderGraphics.PERPENDICULAR
+  } else if (season.equals("Spring")) {
+    // Light satin border with a simple floral motif for spring
+    E.setStitch(4, 8, 0.3);
+    E.hatchMode(PEmbroiderGraphics.SATIN);
+  } else if (season.equals("Summer")) {
+    // Thicker zigzag stitch border, reminiscent of sun rays for summer
+    E.setStitch(10, 20, 0.4);
+    E.hatchMode(PEmbroiderGraphics.ZIGZAG);
+  }
+
+  drawHexagon(cx, cy, hexRadius + borderThickness / 2);
+
+  // Set color based on temperature for the inner hexagon (using high temperature)
+  float temperature = temperatureHigh;
+  if (temperature <= 7.5) {
+    E.fill(810); // Light Lilac
+  } else if (temperature <= 10) {
+    E.fill(620); // Magenta
+  } else if (temperature <= 12.5) {
+    E.fill(614); // Purple
+  } else if (temperature <= 15) {
+    E.fill(405); // Blue
+  } else if (temperature <= 17.5) {
+    E.fill(19); // Sky Blue
+  } else if (temperature <= 20) {
+    E.fill(534); // Teal Green
+  } else if (temperature <= 22.5) {
+    E.fill(509); // Leaf Green
+  } else if (temperature <= 25) {
+    E.fill(513); // Lime Green
+  } else if (temperature <= 27.5) {
+    E.fill(202); // Lemon Yellow
+  } else if (temperature <= 30) {
+    E.fill(208); // Orange
+  } else if (temperature <= 35) {
+    E.fill(126); // Pumpkin
+  } else if (temperature <= 37.5) {
+    E.fill(800); // Red
+  } else {
+    E.fill(807); // Carmine
+  }
+
+  // Draw the inner hexagon (center fill)
+  E.noStroke();
+  
+  if (season.equals("Autumn")) {
+    // Parallel Hatch with an angled offset for a falling leaves impression
+    E.setStitch(5, 10, 0.5);
+    E.hatchMode(PEmbroiderGraphics.PARALLEL);
+    E.hatchAngleDeg(30);
+  } else if (season.equals("Winter")) {
+    // Spiral Hatch for a swirling snowflake effect
+    E.setStitch(5, 15, 0.3);
+    E.hatchMode(PEmbroiderGraphics.SPIRAL);
+  } else if (season.equals("Spring")) {
+    // Concentric Hatch for a blooming effect
+    E.setStitch(4, 12, 0.4);
+    E.hatchMode(PEmbroiderGraphics.CONCENTRIC);
+  } else if (season.equals("Summer")) {
+    // Satin Hatch for a vibrant, smooth effect
+    E.setStitch(6, 14, 0.3);
+    E.hatchMode(PEmbroiderGraphics.SATIN);
+  }
+
+  drawHexagon(cx, cy, hexRadius - borderThickness);
+}
+
+void drawHexagon(float cx, float cy, float radius) {
+  float angleOffset = PI / 6; // Offset to ensure flat sides are facing each other
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = angleOffset + i * PI / 3;
+    float x = cx + cos(angle) * radius;
+    float y = cy + sin(angle) * radius;
+    E.vertex(x, y);
+  }
+  E.endShape(CLOSE);
+}
+
+
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // adjusted canvas size to accommodate the increased spacing
+  background(255); // set background to white for better printing contrast
+
+  // initialize PEmbroiderGraphics
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Alignment_Dots.vp3"); // save as VP3 file format
+  String pesOutputFilePath = sketchPath("Alignment_Dots.pes"); // save as PES file format (used by SE425)
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // set PES output path
+
+  // begin the embroidery drawing process
+  E.beginDraw(); // start drawing the embroidery; sourced from PEmbroider library
+  E.clear(); // clear any previous content from the embroidery canvas
+
+  // draw alignment dots to be embroidered for use in positioning the fabric correctly
+  addAlignmentDots(); // function to add alignment dots using PEmbroider
+
+  E.optimize(); // optimize embroidery output; sourced from PEmbroider library (slow but essential for high-quality stitch output)
+  E.endDraw(); // end the embroidery drawing process and save to file
+  E.visualize(); // visualize the embroidery design, showing the arrangement of stitches
+
+  // draw the alignment dots to the main canvas for saving as a printable PNG
+  addAlignmentDotsForPrint(); // function to add alignment dots for printable use (not embroidery)
+
+  // save the visual representation of alignment dots as a PNG file
+  save("Alignment_Dots_Printable.png");
+}
+
+// function to add alignment dots for embroidery using PEmbroider
+void addAlignmentDots() {
+  float dotSize = 5; // set the size of each alignment dot
+  E.strokeWeight(2); // set the stitch thickness for the dots to make them more visible
+
+  // first hexagon pair - top left (positioned at (250, 250))
+  float x1 = 250; // x-coordinate for the first pair of hexagons
+  float y1 = 250; // y-coordinate for the first hexagon
+
+  // add four dots around the top hexagon at (x1, y1)
+  addFourDotsAroundHexagonE(x1, y1);
+  
+  // add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing)
+  addFourDotsAroundHexagonE(x1, y1 + 450);
+
+  // second hexagon pair - top right (positioned at (700, 250))
+  float x2 = 700; // x-coordinate for the second pair of hexagons
+  float y2 = 250; // y-coordinate for the first hexagon in the second pair
+
+  // add four dots around the top hexagon at (x2, y2)
+  addFourDotsAroundHexagonE(x2, y2);
+
+  // add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing)
+  addFourDotsAroundHexagonE(x2, y2 + 450);
+}
+
+// function to add alignment dots for printable use (not embroidery)
+void addAlignmentDotsForPrint() {
+  float dotSize = 5; // set the size of each alignment dot for print
+
+  // first hexagon pair - top left (positioned at (250, 250))
+  float x1 = 250; // x-coordinate for the first pair of hexagons
+  float y1 = 250; // y-coordinate for the first hexagon
+
+  // add four dots around the top hexagon at (x1, y1) for printing
+  addFourDotsAroundHexagonPrint(x1, y1);
+  
+  // add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x1, y1 + 450);
+
+  // second hexagon pair - top right (positioned at (700, 250))
+  float x2 = 700; // x-coordinate for the second pair of hexagons
+  float y2 = 250; // y-coordinate for the first hexagon in the second pair
+
+  // add four dots around the top hexagon at (x2, y2) for printing
+  addFourDotsAroundHexagonPrint(x2, y2);
+
+  // add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x2, y2 + 450);
+}
+
+// function to add four alignment dots around a hexagon using PEmbroider (for embroidery)
+void addFourDotsAroundHexagonE(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // offset distance for placing dots around the hexagon, taking into account radius and border thickness
+  float dotSize = 5; // size of each alignment dot for embroidery
+
+  // draw dots around the hexagon using PEmbroider (E.ellipse)
+  // top left dot
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // top right dot
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // bottom left dot
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // bottom right dot
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+// function to add four alignment dots around a hexagon for printing (not embroidery)
+void addFourDotsAroundHexagonPrint(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // offset distance for placing dots around the hexagon, same as in embroidery version
+  float dotSize = 5; // size of each alignment dot for printing
+
+  // set stroke properties for dots to be printed
+  stroke(0); // black outline for dots
+  strokeWeight(2); // thickness of the outline
+  fill(0); // fill the dots with black color
+
+  // draw dots around the hexagon using Processing ellipse function (for printing)
+  // top left dot
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // top right dot
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // bottom left dot
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // bottom right dot
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // radius of hexagon (distance from center to any corner of the canvas)
+float borderThickness = 20; // thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // this canvas size matches the one used for the sets of four hexagons and fits the SE245 embroidery hoop
+  background(255); // this was grey but i changed it to white for better contrast when it is printed
+
+  // originally sourced from the PEmbroider library and manipulated and expanded to fit my design specifications
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Print_Alignment_Dots.vp3"); // save as VP3 file format
+  String pesOutputFilePath = sketchPath("Print_Alignment_Dots.pes"); // save as PES file format (used by SE425)
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // set PES output path
+
+  // Code sourced directly from the PEmbroider library to draw any kind of embroidery design
+  E.beginDraw(); // start drawing the embroidery design
+  E.clear(); // clear any previous content from the embroidery canvas
+
+  // draw alignment dots to be lightly embroidered in order to position the fabric in real life accurately
+  addAlignmentDots(); // this is a function to add alignment dots
+
+  //sourced directly from PEmbroider library
+  E.optimize(); // slow but essential for high-quality stitch output
+  E.endDraw(); // end the embroidery drawing process and save to file (also for the png)
+  E.visualize(); // visualize the embroidery design, showing the arrangement of stitches (but no colour)
+
+  // draw the alignment dots on the canvas so i can save it as a printable PNG that is true to size
+  addAlignmentDotsForPrint(); // this is a function to add alignment dots for printable use (not embroidery)
+
+  // save the visual representation of alignment dots as a PNG image file
+  save("Alignment_Dots_Printable.png");
+}
+
+// this is a function to add alignment dots for embroidery, built on from code in the PEmbroider library
+void addAlignmentDots() {
+  float dotSize = 5; // set the size of each alignment dot
+  E.strokeWeight(2); // set the stitch thickness for the dots to make them more visible (need to experiment with machine to see how thick they actually are in real life)
+
+  // first hexagon pair - top left (positioned at (250, 250))
+  float x1 = 250; // x-coordinate for the first pair of hexagons
+  float y1 = 250; // y-coordinate for the first hexagon
+
+  // add four dots around the top hexagon at (x1, y1)
+  addFourDotsAroundHexagonE(x1, y1);
+  
+  // add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing)
+  addFourDotsAroundHexagonE(x1, y1 + 450);
+
+  // second hexagon pair - top right (positioned at (700, 250))
+  float x2 = 700; // x-coordinate for the second pair of hexagons
+  float y2 = 250; // y-coordinate for the first hexagon in the second pair
+
+  // add four dots around the top hexagon at (x2, y2)
+  addFourDotsAroundHexagonE(x2, y2);
+
+  // add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing)
+  addFourDotsAroundHexagonE(x2, y2 + 450);
+}
+
+// function to add alignment dots for printable use (not embroidery)
+void addAlignmentDotsForPrint() {
+  float dotSize = 5; // set the size of each alignment dot for print
+
+  // first hexagon pair - top left (positioned at (250, 250))
+  float x1 = 250; // x-coordinate for the first pair of hexagons
+  float y1 = 250; // y-coordinate for the first hexagon
+
+  // add four dots around the top hexagon at (x1, y1) for printing
+  addFourDotsAroundHexagonPrint(x1, y1);
+  
+  // add four dots around the bottom hexagon, directly below the first (y1 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x1, y1 + 450);
+
+  // second hexagon pair - top right (positioned at (700, 250))
+  float x2 = 700; // x-coordinate for the second pair of hexagons
+  float y2 = 250; // y-coordinate for the first hexagon in the second pair
+
+  // add four dots around the top hexagon at (x2, y2) for printing
+  addFourDotsAroundHexagonPrint(x2, y2);
+
+  // add four dots around the bottom hexagon, directly below the first (y2 + 450 spacing) for printing
+  addFourDotsAroundHexagonPrint(x2, y2 + 450);
+}
+
+// function to add four alignment dots around a hexagon using the PEmbroider library
+void addFourDotsAroundHexagonE(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // the offset distance for placing dots around the hexagon, taking into account radius and border thickness
+  float dotSize = 5; // the size of each dot for embroidery
+
+  // draw dots around the hexagon using PEmbroider (E.ellipse)
+  // top left dot
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // top right dot
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // bottom left dot
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // bottom right dot
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+// this is a function to add four alignment dots around a hexagon for printing (not embroidery)
+void addFourDotsAroundHexagonPrint(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // offset distance for placing dots around the hexagon, same as in embroidery version
+  float dotSize = 5; // size of each alignment dot for printing
+
+  // set stroke properties for dots to be printed
+  stroke(0); // black outline for dots
+  strokeWeight(2); // thickness of the outline
+  fill(0); // fill the dots with black color
+
+  // draw dots around the hexagon using Processing ellipse function (for printing)
+  // top left dot
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // top right dot
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // bottom left dot
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // bottom right dot
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}

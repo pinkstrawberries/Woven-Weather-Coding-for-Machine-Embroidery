@@ -1,0 +1,383 @@
+temperature data caculations
+
+
+Here is a summary for each month, including the extreme and average temperatures, along with their corresponding colors:
+
+January
+Extreme Low: 15.1°C - Color: 019 sky blue
+Extreme High: 29.8°C - Color: 208 orange
+Average Low: 19.02°C - Color: 534 teal green
+Average High: 26.12°C - Color: 202 lemon yellow
+February
+Extreme Low: 16.9°C - Color: 019 sky blue
+Extreme High: 30.5°C - Color: 126 pumpkin
+Average Low: 19.77°C - Color: 534 teal green
+Average High: 26.91°C - Color: 202 lemon yellow
+March
+Extreme Low: 14.2°C - Color: 405 blue
+Extreme High: 37.5°C - Color: 807 carmine
+Average Low: 19.35°C - Color: 534 teal green
+Average High: 26.94°C - Color: 202 lemon yellow
+April
+Extreme Low: 11.1°C - Color: 614 purple
+Extreme High: 27.3°C - Color: 202 lemon yellow
+Average Low: 14.48°C - Color: 405 blue
+Average High: 22.43°C - Color: 509 leaf green
+May
+Extreme Low: 6.8°C - Color: 810 light lilac
+Extreme High: 23.4°C - Color: 509 leaf green
+Average Low: 9.74°C - Color: 620 magenta
+Average High: 19.61°C - Color: 534 teal green
+June
+Extreme Low: 4.9°C - Color: N/A (Below the range)
+Extreme High: 21.4°C - Color: 509 leaf green
+Average Low: 9.73°C - Color: 620 magenta
+Average High: 18.34°C - Color: 534 teal green
+July
+Extreme Low: 5.0°C - Color: 810 light lilac
+Extreme High: 24.9°C - Color: 513 lime green
+Average Low: 9.61°C - Color: 620 magenta
+Average High: 19.51°C - Color: 534 teal green
+August
+Extreme Low: 7.8°C - Color: 620 magenta
+Extreme High: 26.6°C - Color: 202 lemon yellow
+Average Low: 10.53°C - Color: 614 purple
+Average High: 19.57°C - Color: 534 teal green
+September
+Extreme Low: 7.3°C - Color: 810 light lilac
+Extreme High: 34.2°C - Color: 800 red
+Average Low: 12.06°C - Color: 405 blue
+Average High: 23.05°C - Color: 509 leaf green
+October
+Extreme Low: 9.9°C - Color: 620 magenta
+Extreme High: 35.5°C - Color: 807 carmine
+Average Low: 13.9°C - Color: 405 blue
+Average High: 24.77°C - Color: 513 lime green
+November
+Extreme Low: 13.1°C - Color: 405 blue
+Extreme High: 31.4°C - Color: 126 pumpkin
+Average Low: 17.33°C - Color: 534 teal green
+Average High: 24.12°C - Color: 513 lime green
+December
+Extreme Low: 15.2°C - Color: 019 sky blue
+Extreme High: 38.9°C - Color: 107 dark fuchsia
+Average Low: 19.07°C - Color: 534 teal green
+Average High: 27.55°C - Color: 208 orange
+Let me know if you need any further help with this data.
+
+
+import json
+
+# Load the JSON data
+with open('sydney_temperature_2023.json', 'r') as f:
+    temperature_data = json.load(f)
+
+# Function to extract temperature statistics for a given month
+def get_temperature_stats(month_prefix):
+    days = temperature_data["days"]
+    extreme_low = float('inf')
+    extreme_high = float('-inf')
+    sum_high = 0
+    sum_low = 0
+    count = 0
+
+    for day in days:
+        date = day["datetime"]
+        if date.startswith(month_prefix):
+            temp_max = day["tempmax"]
+            temp_min = day["tempmin"]
+
+            if temp_max > extreme_high:
+                extreme_high = temp_max
+            if temp_min < extreme_low:
+                extreme_low = temp_min
+
+            sum_high += temp_max
+            sum_low += temp_min
+            count += 1
+
+    average_high = sum_high / count if count > 0 else None
+    average_low = sum_low / count if count > 0 else None
+
+    return {
+        "extreme_low": extreme_low,
+        "extreme_high": extreme_high,
+        "average_low": average_low,
+        "average_high": average_high
+    }
+
+# Get stats for all the months in 2023
+january_stats = get_temperature_stats("2023-01")
+february_stats = get_temperature_stats("2023-02")
+march_stats = get_temperature_stats("2023-03")
+april_stats = get_temperature_stats("2023-04")
+may_stats = get_temperature_stats("2023-05")
+june_stats = get_temperature_stats("2023-06")
+july_stats = get_temperature_stats("2023-07")
+august_stats = get_temperature_stats("2023-08")
+september_stats = get_temperature_stats("2023-09")
+october_stats = get_temperature_stats("2023-10")
+november_stats = get_temperature_stats("2023-11")
+december_stats = get_temperature_stats("2023-12")
+
+print("January Stats:", january_stats)
+print("February Stats:", february_stats)
+print("March Stats:", march_stats)
+print("April Stats:", april_stats)
+print("May Stats:", may_stats)
+print("June Stats:", june_stats)
+print("July Stats:", july_stats)
+print("August Stats:", august_stats)
+print("September Stats:", september_stats)
+print("October Stats:", october_stats)
+print("November Stats:", november_stats)
+print("December Stats:", december_stats)
+
+
+
+import json
+
+# Load the JSON data
+with open('sydney_temperature_2023.json', 'r') as f:
+    temperature_data = json.load(f)
+
+# Function to extract temperature statistics for a given month
+def get_temperature_stats(month_prefix):
+    days = temperature_data["days"]
+    extreme_low = float('inf')
+    extreme_high = float('-inf')
+    sum_high = 0
+    sum_low = 0
+    count = 0
+
+    for day in days:
+        date = day["datetime"]
+        if date.startswith(month_prefix):
+            temp_max = day["tempmax"]
+            temp_min = day["tempmin"]
+
+            if temp_max > extreme_high:
+                extreme_high = temp_max
+            if temp_min < extreme_low:
+                extreme_low = temp_min
+
+            sum_high += temp_max
+            sum_low += temp_min
+            count += 1
+
+    average_high = sum_high / count if count > 0 else None
+    average_low = sum_low / count if count > 0 else None
+
+    return {
+        "extreme_low": extreme_low,
+        "extreme_high": extreme_high,
+        "average_low": average_low,
+        "average_high": average_high
+    }
+
+# Get stats for all the months in 2023
+months = [
+    "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", 
+    "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", 
+    "2023-11", "2023-12"
+]
+
+for month in months:
+    stats = get_temperature_stats(month)
+    print(f"{month} Stats: {stats}")
+
+
+import json
+
+# Load the JSON data
+with open('sydney_temperature_2023.json', 'r') as f:
+    temperature_data = json.load(f)
+
+# Function to extract temperature statistics for a given month
+def get_temperature_stats(month_prefix):
+    days = temperature_data["days"]
+    extreme_low = float('inf')
+    extreme_high = float('-inf')
+    sum_high = 0
+    sum_low = 0
+    count = 0
+
+    for day in days:
+        date = day["datetime"]
+        if date.startswith(month_prefix):
+            temp_max = day["tempmax"]
+            temp_min = day["tempmin"]
+
+            if temp_max > extreme_high:
+                extreme_high = temp_max
+            if temp_min < extreme_low:
+                extreme_low = temp_min
+
+            sum_high += temp_max
+            sum_low += temp_min
+            count += 1
+
+    average_high = sum_high / count if count > 0 else None
+    average_low = sum_low / count if count > 0 else None
+
+    return {
+        "extreme_low": extreme_low,
+        "extreme_high": extreme_high,
+        "average_low": average_low,
+        "average_high": average_high
+    }
+
+# Get stats for January and February
+january_stats = get_temperature_stats("2023-01")
+february_stats = get_temperature_stats("2023-02")
+
+print("January Stats:", january_stats)
+print("February Stats:", february_stats)
+
+
+
+
+
+
+
+
+
+
+
+('January Stats:', {'extreme_low': 15.1, 'average_high': 26.122580645161293, 'average_low': 19.016129032258064, 'extreme_high': 29.8})
+('February Stats:', {'extreme_low': 16.9, 'average_high': 26.91428571428571, 'average_low': 19.77142857142857, 'extreme_high': 30.5})
+
+
+Let's determine the colors for each of the first four hexagons based on the high temperatures:
+
+### January Extreme Low and High (First Hexagon)
+- **Extreme Low:** 15.1°C
+- **Extreme High:** 29.8°C
+
+For **Extreme Low (15.1°C)**:
+- 15.1°C falls in the range **10-15°C**.
+- Color: **Sky Blue** (`RGB: (135, 206, 235)`)
+
+For **Extreme High (29.8°C)**:
+- 29.8°C falls in the range **25-30°C**.
+- Color: **Yellow** (`RGB: (255, 255, 0)`)
+
+### January Average Low and High (Second Hexagon)
+- **Average Low:** 19.0°C
+- **Average High:** 26.1°C
+
+For **Average Low (19.0°C)**:
+- 19.0°C falls in the range **15-20°C**.
+- Color: **Teal Green** (`RGB: (0, 128, 128)`)
+
+For **Average High (26.1°C)**:
+- 26.1°C falls in the range **25-30°C**.
+- Color: **Yellow** (`RGB: (255, 255, 0)`)
+
+### February Extreme Low and High (Third Hexagon)
+- **Extreme Low:** 16.9°C
+- **Extreme High:** 30.5°C
+
+For **Extreme Low (16.9°C)**:
+- 16.9°C falls in the range **15-20°C**.
+- Color: **Teal Green** (`RGB: (0, 128, 128)`)
+
+For **Extreme High (30.5°C)**:
+- 30.5°C falls in the range **30-35°C**.
+- Color: **Tangerine** (`RGB: (255, 165, 0)`)
+
+### February Average Low and High (Fourth Hexagon)
+- **Average Low:** 19.8°C
+- **Average High:** 26.9°C
+
+For **Average Low (19.8°C)**:
+- 19.8°C falls in the range **15-20°C**.
+- Color: **Teal Green** (`RGB: (0, 128, 128)`)
+
+For **Average High (26.9°C)**:
+- 26.9°C falls in the range **25-30°C**.
+- Color: **Yellow** (`RGB: (255, 255, 0)`)
+
+### Summary of Colors for Each Hexagon:
+1. **January Extreme Low and High**:
+   - **Low (15.1°C)**: Sky Blue (`RGB: 135, 206, 235`)
+   - **High (29.8°C)**: Yellow (`RGB: 255, 255, 0`)
+
+2. **January Average Low and High**:
+   - **Low (19.0°C)**: Teal Green (`RGB: 0, 128, 128`)
+   - **High (26.1°C)**: Yellow (`RGB: 255, 255, 0`)
+
+3. **February Extreme Low and High**:
+   - **Low (16.9°C)**: Teal Green (`RGB: 0, 128, 128`)
+   - **High (30.5°C)**: Tangerine (`RGB: 255, 165, 0`)
+
+4. **February Average Low and High**:
+   - **Low (19.8°C)**: Teal Green (`RGB: 0, 128, 128`)
+   - **High (26.9°C)**: Yellow (`RGB: 255, 255, 0`)
+
+
+Let's determine the colors for each of the first four hexagons based on the high temperatures:
+
+January Extreme Low and High (First Hexagon)
+Extreme Low: 15.1°C
+Extreme High: 29.8°C
+For Extreme Low (15.1°C):
+
+15.1°C falls in the range 10-15°C.
+Color: Sky Blue (RGB: (135, 206, 235))
+For Extreme High (29.8°C):
+
+29.8°C falls in the range 25-30°C.
+Color: Yellow (RGB: (255, 255, 0))
+January Average Low and High (Second Hexagon)
+Average Low: 19.0°C
+Average High: 26.1°C
+For Average Low (19.0°C):
+
+19.0°C falls in the range 15-20°C.
+Color: Teal Green (RGB: (0, 128, 128))
+For Average High (26.1°C):
+
+26.1°C falls in the range 25-30°C.
+Color: Yellow (RGB: (255, 255, 0))
+February Extreme Low and High (Third Hexagon)
+Extreme Low: 16.9°C
+Extreme High: 30.5°C
+For Extreme Low (16.9°C):
+
+16.9°C falls in the range 15-20°C.
+Color: Teal Green (RGB: (0, 128, 128))
+For Extreme High (30.5°C):
+
+30.5°C falls in the range 30-35°C.
+Color: Tangerine (RGB: (255, 165, 0))
+February Average Low and High (Fourth Hexagon)
+Average Low: 19.8°C
+Average High: 26.9°C
+For Average Low (19.8°C):
+
+19.8°C falls in the range 15-20°C.
+Color: Teal Green (RGB: (0, 128, 128))
+For Average High (26.9°C):
+
+26.9°C falls in the range 25-30°C.
+Color: Yellow (RGB: (255, 255, 0))
+
+
+Summary of Colors for Each Hexagon:
+January Extreme Low and High:
+
+Low (15.1°C): Sky Blue (RGB: 135, 206, 235)
+High (29.8°C): Yellow (RGB: 255, 255, 0)
+January Average Low and High:
+
+Low (19.0°C): Teal Green (RGB: 0, 128, 128)
+High (26.1°C): Yellow (RGB: 255, 255, 0)
+February Extreme Low and High:
+
+Low (16.9°C): Teal Green (RGB: 0, 128, 128)
+High (30.5°C): Tangerine (RGB: 255, 165, 0)
+February Average Low and High:
+
+Low (19.8°C): Teal Green (RGB: 0, 128, 128)
+High (26.9°C): Yellow (RGB: 255, 255, 0)

@@ -1,0 +1,576 @@
+yayy alignment dots
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Jan_and_Feb_with_Alignment.vp3");
+  String pesOutputFilePath = sketchPath("Jan_and_Feb_with_Alignment.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file with the correct name
+
+ E.beginDraw();
+ E.clear();
+  
+  // Add alignment dots to help with re-hooping
+  addAlignmentDots();
+
+  E.optimize(); // Slow but necessary for good output
+  E.endDraw(); // Write the embroidery file
+  E.visualize();
+}
+
+void addAlignmentDots() {
+  float dotSize = 5; // Size of each alignment dot
+  E.strokeWeight(2); // Set the stitch thickness for the dots
+
+  // Alignment dots for the hexagons
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagon(x1, y1);
+  addFourDotsAroundHexagon(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagon(x2, y2);
+  addFourDotsAroundHexagon(x2, y2 + 450); // Below the second hexagon
+}
+
+void addFourDotsAroundHexagon(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  // Top left
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+  }
+
+lets pretend ive done the first set of alignment stitches, left my hoop in and immediately did the first set of hexagons. now i have to rehoop my fabric to the next part to do the next set of dots and hexagons. what steps would i follow?
+ChatGPT said:
+ChatGPT
+Great, you've successfully generated alignment stitches and hexagons that frame your work! Here are the detailed steps to physically align your embroidery for the next set of hexagons using your alignment stitches:
+
+Step-by-Step Process for Using Alignment Stitches to Align Hooping:
+Initial Hooping and Stitching:
+
+Begin with hooping the fabric and stabilizer for the first set of alignment stitches. Make sure the fabric is taut and securely placed in the hoop.
+Load and embroider the first set of alignment dots (the small alignment stitches).
+Without unhooping the fabric, embroider the hexagons that correspond to this section.
+Removing from Hoop:
+
+Once the first set of hexagons and alignment stitches are complete, carefully remove the hoop from your embroidery machine.
+Do not unpick the alignment stitches at this point, as they are crucial markers for aligning the next hooping.
+Preparing for Re-Hooping:
+
+Now, you need to move to the next section of fabric to embroider the subsequent set of hexagons.
+Reposition the fabric so that the next set of hexagons (or alignment marks) will fit within the embroidery hoop. Make sure the fabric remains as flat as possible without introducing wrinkles.
+Aligning Using Alignment Stitches:
+
+Before tightening the hoop, use the previously embroidered alignment stitches to guide the new positioning.
+Align the hoop in such a way that the new alignment dots you are about to embroider will match up precisely with the existing ones. You can use a printed template or eyeball the positions to match up the existing dots as closely as possible.
+For precision:
+Place a template or transparent sheet with the positions of the next set of alignment stitches and align them directly on top of the embroidered dots.
+Move and adjust the hoop until the crosshairs on the template match with the previous stitches.
+Testing Alignment:
+
+Once you believe everything is aligned, place the hoop back in the embroidery machine.
+Load the next part of your design, starting with the next set of alignment dots.
+Run the embroidery machine to stitch the new set of alignment dots.
+Pause the machine and check to ensure that these new alignment dots line up exactly on top of the previous dots. If they do not, stop and re-adjust the hoop.
+Embroidering the Next Section:
+
+If the alignment dots are perfectly placed, continue with the embroidery.
+Embroider the new set of hexagons, using the alignment stitches as your guide to make sure everything lines up seamlessly.
+Finalizing the Process:
+
+Repeat this process for each new set of hexagons.
+Once all the hexagons are completed and perfectly aligned, you can remove the alignment stitches using a seam ripper.
+Be gentle when removing the stitches, making sure you don’t damage the surrounding embroidery.
+Tips for Success:
+Use Temporary Spray Adhesive: Using a temporary spray adhesive can help keep the stabilizer and fabric from shifting when rehooping.
+Printed Templates: Consider printing alignment templates to help line up the alignment dots more accurately.
+Practice Alignment on Scrap Fabric: If possible, practice the alignment process a few times on scrap fabric. It takes a bit of practice to become confident in perfect re-hooping.
+Magnifying Glass: Using a magnifying glass while positioning the hoop can help to ensure the alignment dots are precisely matched.
+This approach should help you create a seamless design, extending the embroidery beyond the limitations of your hoop size, similar to what was described in the article you mentioned. Let me know if you need more help or clarification on any step!
+
+When aligning the hexagons using the alignment dots, it’s crucial to be very precise to ensure the subsequent designs match up seamlessly. Here’s a detailed explanation of how to achieve proper alignment, both with and without a printed template.
+
+Option 1: Aligning with a Printed Template (For Greater Precision)
+Prepare a Printed Template:
+
+Create a printed template of the current embroidery layout with the alignment dots and hexagons.
+Make sure the template includes crosshairs at each alignment dot position.
+Aligning the New Section:
+
+Lay the template over your fabric, ensuring that it covers both the current embroidery (the existing alignment dots) and the area where the next section will be embroidered.
+Match the alignment dots:
+Use the printed crosshairs on the template and align them exactly over the embroidered alignment dots.
+Secure the Template:
+You can use tape or pins to temporarily attach the template to your fabric. This ensures it stays in place while adjusting the hoop.
+Adjusting the Hoop:
+Move the hoop around while keeping an eye on the template to make sure the next alignment dot positions on the template match the previous alignment stitches on the fabric. The aim is to make sure the dots that will be embroidered next are directly on top of the already stitched dots.
+Test the Alignment:
+Load the machine with the alignment dot pattern. Start by embroidering just the next set of alignment dots.
+After stitching these dots, pause the machine and compare them with the template. If the new alignment dots stitch directly over the previous dots, you can move forward to embroider the new hexagons. Otherwise, you may need to adjust the hoop again until you get a perfect match.
+Option 2: Aligning Without a Printed Template (Manual Alignment/Eyeballing)
+Visual Reference of Previous Alignment Dots:
+
+Carefully observe the already stitched alignment dots on your fabric. These dots are positioned around the hexagons you embroidered previously.
+The new section of alignment dots will also have four small dots, forming a rectangular or square frame.
+Positioning the Hoop:
+
+Place the fabric back into the hoop such that the next embroidery area aligns perfectly with the previous section.
+Use the existing alignment dots as visual markers. Your goal is to make sure that the hoop is positioned such that the next alignment stitches will align precisely with these previously stitched dots.
+Testing the Alignment:
+
+Place the hoop in the embroidery machine and start embroidering the next set of alignment dots.
+Pause the machine after the first few dots are embroidered.
+Check if the new alignment dots are in the exact same position as the previous ones. They should overlap precisely.
+If they don’t match, remove the hoop and reposition it slightly.
+It can be helpful to use the needle of the machine as a point to verify alignment — lower the needle manually to see if it will hit the exact center of the existing alignment dot.
+Specific Alignment Stitches to Focus On:
+The four alignment dots in your design are located at four corners around each pair of hexagons:
+Top-Left Dot: Helps you align horizontally and vertically.
+Top-Right Dot: Ensures horizontal alignment is maintained across the width.
+Bottom-Left Dot: Assists in maintaining vertical alignment.
+Bottom-Right Dot: Confirms the bottom corner is in place, ensuring overall alignment is perfect.
+When re-hooping:
+
+Top-Left and Top-Right Dots: Initially align the top two dots. These are crucial for ensuring that your horizontal positioning is correct.
+Bottom-Left and Bottom-Right Dots: Once the top dots are aligned, check if the bottom dots fall into position. These dots ensure that the vertical alignment is also correct.
+Using a printed template will be more reliable since you can overlay the printed dots onto the existing embroidery and visually verify alignment. However, if you do not use a printed template, you can manually align using the machine’s needle and visually matching the previously embroidered dots with where the next dots should go.
+
+This careful re-hooping process, along with testing alignment stitches before starting each hexagon section, will help ensure that all sections line up seamlessly, producing a polished final embroidery design.
+
+When creating a printed template for alignment, the key is to ensure that you have enough information on the template to precisely position each new section of the embroidery design. Here’s how you could approach it:
+
+### **Step 1: Program the Alignment Stitch Design**
+- **Create a Design with Alignment Stitches**: You need to first program and generate the alignment stitches that represent **the positions of the four alignment dots**. This design should be saved in a **single embroidery file**, such as a VP3 or PES file, which contains the layout of the alignment stitches for one set of hexagons.
+- **Program the Hexagons**: Ensure that the hexagons for one month (two vertically-aligned hexagons) are programmed and aligned with the dots so they fit within the marked space.
+
+### **Step 2: Decide What to Print**
+- **Print the Alignment Stitches Only**: For most precise alignment, you can simply print the **alignment stitches (dots)** without the actual hexagons. The **alignment dots** will be used as reference markers, allowing you to align the fabric accurately for each hooping.
+- If needed, **include the hexagons** as an outline for visual reference (for example, as a light, dashed line) to see how the hexagons will fit within each set of alignment dots.
+
+### **Step 3: Printing the Template**
+- **Export the Design as a Template File**:
+  1. Use your embroidery software to **export the alignment stitches and optionally the hexagon outlines** as a PDF or an image.
+  2. Make sure to **scale the exported design** 1:1 (actual size), so that the printed template accurately matches the embroidery layout.
+  
+- **Print One Set of Alignment Dots (With or Without Hexagons)**:
+  - **Alignment Stitches Only**: If you’re printing just the dots, ensure that each alignment dot is **clearly marked** on the printout.
+  - **With Hexagon Outlines**: If you choose to print the hexagon outlines, make sure they are only used as a visual reference. This will help you align the hexagons properly and provide an additional visual cue.
+
+### **Step 4: Aligning Using the Template**
+- **Print One Template Per Hoop Section**: You will only need to print **one set of alignment dots** for each pair of hexagons (e.g., for one month). This is because the template serves as a guide for hooping that particular section.
+- When moving to the next hooping:
+  - **Re-use the same template** to align the new hooping. Place it over the fabric and align the printed dots with the previously embroidered dots.
+  
+- If you are aligning an entire sequence of hexagons in a larger layout (like **all 24 hexagons**), you may need to **print multiple overlapping templates** to ensure continuity across all hoopings. However, for practical purposes, a single template for each hoop section (one month) is typically enough.
+
+### **Summary: What to Print**
+- You should **program the alignment dots** and **create a printout** for the **alignment stitches of one set of hexagons** (two hexagons for one month).
+- **Print just the alignment dots** or, optionally, print **alignment dots with a light outline** of the hexagons.
+- Re-use the **printed template for each re-hooping** to ensure precise alignment.
+
+By following this method, you’ll have a reliable physical reference that helps you align each hoop section with the previous one, ensuring that the entire design stays consistent and aligned perfectly as you move from section to section.
+
+
+You’re absolutely correct, the original code you've provided is indeed for four hexagons, not two. If you're considering the printed template, here's how to adjust your approach:
+
+Step 1: Program and Export Alignment Stitches for Four Hexagons
+Since the code includes four hexagons (representing two months, each with an "extreme" and an "average" hexagon), it's best to generate the alignment dots for the entire set of four hexagons.
+This will make it easier to keep everything aligned over two rows, reducing the number of times you have to re-hoop the fabric. Each set of alignment dots would frame four hexagons: two vertically stacked pairs.
+Step 2: Print the Alignment Template for Four Hexagons
+Program for Four Hexagons: Use your embroidery software to export a design that includes the alignment stitches (four small dots per corner) that frame the entire layout for the four hexagons.
+Optional Hexagon Outline: Include light outlines of the hexagons to give a visual guide for positioning. You can make these outlines less visible (e.g., dashed or thin lines) so that the dots are the primary focus for alignment.
+Export Template: Export this layout as a PDF or an image file, ensuring that you scale it to 1:1 (actual size) so that it matches the embroidered design.
+Step 3: Consider Printing for Eight Hexagons
+If hoop limitations do not apply for the printed template, then creating a larger printed template with alignment dots for eight hexagons (i.e., four months at a time) could certainly be useful.
+
+Why Eight Hexagons?:
+
+Reduces the number of times you need to re-align the fabric, making the embroidery process smoother.
+Helps maintain visual consistency across a larger area, as you have a clear physical guide for aligning larger portions of your design.
+How to Print for Eight Hexagons:
+
+Create a larger design in the embroidery software that shows alignment dots for the eight hexagons (arranged as four columns of two hexagons).
+This will help align two entire columns vertically, representing four months of data.
+Step 4: Practical Use of the Printed Template
+First Hooping:
+Use the printed template that includes alignment dots for four hexagons.
+Align the fabric in the hoop with the template, ensuring that the crosshairs or dots match perfectly before you start embroidering the first four hexagons.
+Subsequent Hoopings:
+When moving to the next set of hexagons:
+Re-use the printed template for either four or eight hexagons.
+Place the printed template over the embroidered fabric and ensure that the alignment dots of the previous embroidery match up with the new positions shown on the printed template.
+Adjust the hoop until the existing embroidered dots match the new positions marked on the printed template.
+Paper vs No Paper:
+With Paper:
+You can use the printed template on transparent paper to make alignment easier.
+Place it over the hoop, ensuring that the alignment dots from the previous embroidery are visible through the paper and match precisely with the new alignment dots printed on it.
+Without Paper:
+If you prefer not to use a printed template, you can eyeball the positions of the embroidered alignment dots and match them up with the new hooping as precisely as possible. However, this might be more prone to errors.
+Summary
+Instead of printing a template for just two hexagons, print a larger template for four hexagons, or even eight hexagons if you can.
+Eight Hexagons would be more efficient, helping to reduce the number of times you need to re-hoop, as well as keeping the alignment more consistent.
+The printed template should include all four corner alignment dots (to frame the four or eight hexagons) along with light outlines of the hexagons for easy visualization.
+This approach ensures that the entire design remains well-aligned across multiple hoopings, saving time and ensuring a more polished final result.
+
+
+To save your Processing output as a PNG, you can use the save() function to take a snapshot of the current frame of the canvas. You can place this command at a specific point in your code where you want to save the output. Here’s how you can do it in a typical Processing sketch:
+
+Example to Save as PNG in Processing
+java
+Copy code
+void setup() {
+  size(800, 800);
+  background(255); // Set background color to white
+
+  // Draw something on the canvas
+  fill(150, 0, 255);
+  ellipse(width/2, height/2, 200, 200);
+
+  // Save the canvas as a PNG
+  save("output_image.png");
+}
+Saving with Specific Details:
+Location: By default, save() will save the file in the sketch folder. You can specify a path if you need to save it elsewhere.
+File Name: You can give any file name ending in .png, e.g., "my_design.png".
+Saving After Completing a Drawing
+If you want to save the canvas after certain actions are done, consider the following:
+
+After Embroidery Generation in PEmbroider: If you are working with PEmbroider or similar processing graphics, you may want to save your work at a specific point like after E.visualize().
+
+In a Function or Condition: You can add save("filename.png") at the end of a function, inside mousePressed(), or any other specific event.
+
+Here's a slightly extended version that you might use in a larger project:
+
+java
+Copy code
+import processing.embroider.*;
+
+PEmbroiderGraphics E;
+
+void setup() {
+  size(1000, 1000);
+  E = new PEmbroiderGraphics(this, width, height);
+  E.beginDraw();
+  E.clear();
+
+  // Draw something with PEmbroiderGraphics (like hexagons)
+  drawHexagon(500, 500, 200);
+
+  E.endDraw(); // End drawing for PEmbroider
+  E.visualize(); // Show what was drawn
+
+  // Save as PNG (save the Processing canvas, not the embroidery file)
+  save("embroidered_hexagon_visual.png");
+}
+
+void drawHexagon(float cx, float cy, float radius) {
+  float angleOffset = PI / 6; // Offset to ensure flat sides are facing each other
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = angleOffset + i * PI / 3;
+    float x = cx + cos(angle) * radius;
+    float y = cy + sin(angle) * radius;
+    E.vertex(x, y);
+  }
+  E.endShape(CLOSE);
+}
+In this code:
+
+After the embroidery has been drawn (E.endDraw()), you visualize it and then save the canvas as a PNG with save("embroidered_hexagon_visual.png").
+Key Notes:
+The PNG file will contain the visual representation of whatever was on the Processing canvas when save() was called.
+If you need to save multiple outputs, you can use a variable name to create different file names, e.g., save("output_" + frameCount + ".png"); to avoid overwriting.
+This should be a simple and effective way to save your Processing visual output to a PNG file!
+
+To save the visual representation of the embroidery as an image that you can print, you need to use the `save()` function to export the canvas as a PNG file. Since the `PEmbroiderGraphics` (`E`) is drawing the stitches directly to the embroidery format, we need to capture the visual representation of the canvas in Processing itself.
+
+You can do this by drawing the same elements to the canvas that are being used for the embroidery, then calling `save()` to create a PNG output. Below is your adjusted code to also include saving as an image:
+
+### Modified Code to Save as Image
+
+```java
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing
+  background(255); // Set background to white for better printing contrast
+
+  // Initialize PEmbroiderGraphics
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Alignment_Dots.vp3");
+  String pesOutputFilePath = sketchPath("Alignment_Dots.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file with the correct name
+
+  // Begin drawing the embroidery
+  E.beginDraw();
+  E.clear();
+
+  // Draw alignment dots with PEmbroider
+  addAlignmentDots();
+
+  E.optimize(); // Slow but necessary for good output
+  E.endDraw(); // Write the embroidery file
+  E.visualize();
+
+  // Draw the same dots to the main canvas for saving as PNG
+  drawAlignmentDotsForPrint();
+
+  // Save the visual representation as PNG
+  save("Alignment_Dots_Printable.png");
+}
+
+void addAlignmentDots() {
+  float dotSize = 5; // Size of each alignment dot
+  E.strokeWeight(2); // Set the stitch thickness for the dots
+
+  // Alignment dots for the hexagons
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagon(x1, y1);
+  addFourDotsAroundHexagon(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagon(x2, y2);
+  addFourDotsAroundHexagon(x2, y2 + 450); // Below the second hexagon
+}
+
+void addFourDotsAroundHexagon(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  // Top left
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+void drawAlignmentDotsForPrint() {
+  float dotSize = 5;
+  stroke(0);
+  strokeWeight(2);
+  fill(0);
+
+  // Draw alignment dots for the hexagons (same as addAlignmentDots)
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  drawFourDots(x1, y1);
+  drawFourDots(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  drawFourDots(x2, y2);
+  drawFourDots(x2, y2 + 450); // Below the second hexagon
+}
+
+void drawFourDots(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  // Top left
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+```
+
+### Summary of Changes:
+1. **Added a Function for Printing**:
+   - The new function `drawAlignmentDotsForPrint()` replicates the alignment dots but draws them on the main canvas.
+   
+2. **Save as PNG**:
+   - The command `save("Alignment_Dots_Printable.png");` is used to save the current canvas as a PNG file after all elements are drawn.
+   
+3. **Separation Between Embroidery and Visual Output**:
+   - `addAlignmentDots()` is used for embroidery instructions (using `PEmbroiderGraphics`).
+   - `drawAlignmentDotsForPrint()` is used to draw visually on the Processing canvas to save as a PNG.
+
+### Notes for Printing:
+- The PNG file saved will have all the alignment dots visually represented, which you can print.
+- Ensure your canvas size (`size(1000, 1000)`) is suitable for the print output size you need. Adjust `size()` for higher or lower resolution as required.
+
+It seems like the function `drawAlignmentDotsForPrint()` was mistakenly referenced without actually being implemented in your code. Instead, the actual function `drawFourDots()` should be used to achieve the same effect for saving as a PNG. I've corrected the code to remove the unnecessary function call and adjusted where `drawFourDots()` should be used.
+
+Here is the revised code:
+
+```java
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 200; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 20; // Adjusted thickness of the border hexagon
+
+void setup() {
+  size(1000, 1000); // Adjusted canvas size to accommodate the increased spacing
+  background(255); // Set background to white for better printing contrast
+
+  // Initialize PEmbroiderGraphics
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Alignment_Dots.vp3");
+  String pesOutputFilePath = sketchPath("Alignment_Dots.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file with the correct name
+
+  // Begin drawing the embroidery
+  E.beginDraw();
+  E.clear();
+
+  // Draw alignment dots with PEmbroider
+  addAlignmentDots();
+
+  E.optimize(); // Slow but necessary for good output
+  E.endDraw(); // Write the embroidery file
+  E.visualize();
+
+  // Draw the same dots to the main canvas for saving as PNG
+  addAlignmentDotsForPrint();
+
+  // Save the visual representation as PNG
+  save("Alignment_Dots_Printable.png");
+}
+
+void addAlignmentDots() {
+  float dotSize = 5; // Size of each alignment dot
+  E.strokeWeight(2); // Set the stitch thickness for the dots
+
+  // Alignment dots for the hexagons
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagonE(x1, y1);
+  addFourDotsAroundHexagonE(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagonE(x2, y2);
+  addFourDotsAroundHexagonE(x2, y2 + 450); // Below the second hexagon
+}
+
+void addAlignmentDotsForPrint() {
+  float dotSize = 5; // Size of each alignment dot
+
+  // Alignment dots for the hexagons (for print)
+  // First hexagon pair (left, at (250, 250))
+  float x1 = 250;
+  float y1 = 250;
+
+  addFourDotsAroundHexagonPrint(x1, y1);
+  addFourDotsAroundHexagonPrint(x1, y1 + 450); // Below the first hexagon
+
+  // Second hexagon pair (right, at (700, 250))
+  float x2 = 700;
+  float y2 = 250;
+
+  addFourDotsAroundHexagonPrint(x2, y2);
+  addFourDotsAroundHexagonPrint(x2, y2 + 450); // Below the second hexagon
+}
+
+void addFourDotsAroundHexagonE(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  // Top left
+  E.ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  E.ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  E.ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  E.ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+
+void addFourDotsAroundHexagonPrint(float cx, float cy) {
+  float dotOffset = hexRadius + borderThickness; // Offset distance for placing dots around the hexagon
+  float dotSize = 5; // Size of the alignment dot
+
+  stroke(0);
+  strokeWeight(2);
+  fill(0);
+
+  // Top left
+  ellipse(cx - dotOffset, cy - dotOffset, dotSize, dotSize);
+  
+  // Top right
+  ellipse(cx + dotOffset, cy - dotOffset, dotSize, dotSize);
+
+  // Bottom left
+  ellipse(cx - dotOffset, cy + dotOffset, dotSize, dotSize);
+
+  // Bottom right
+  ellipse(cx + dotOffset, cy + dotOffset, dotSize, dotSize);
+}
+```
+
+### Key Changes
+1. **Separation of Functions for Embroidery and Print Visualization**:
+   - Created two separate functions: `addFourDotsAroundHexagonE()` for embroidery drawing using `PEmbroiderGraphics` and `addFourDotsAroundHexagonPrint()` for visualization on the main Processing canvas.
+   - Added `addAlignmentDotsForPrint()` to replicate the dots on the Processing canvas for saving as an image.
+
+2. **PNG Saving Adjustment**:
+   - The function `save("Alignment_Dots_Printable.png")` saves the canvas visual representation after drawing.
+
+### Explanation:
+- The `addAlignmentDots()` function is used to draw dots using the PEmbroider library, which are for embroidery.
+- The `addAlignmentDotsForPrint()` function draws the same dots visually onto the canvas so that they can be saved as an image.
+- This ensures that the printed output matches what is being embroidered, making it easier to use for alignment during re-hooping.

@@ -1,0 +1,129 @@
+January and feb
+
+import processing.embroider.*;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+PEmbroiderGraphics E;
+
+float hexRadius = 25; // Adjusted radius of hexagon (distance from center to any corner)
+float borderThickness = 5; // Adjusted thickness of the border hexagon
+
+JSONObject temperatureData;
+
+void setup() {
+  size(720, 720); // Maximum canvas size for 4 inches at 72 DPI
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("hexagons.vp3");
+  String pesOutputFilePath = sketchPath("hexagons.pes");
+  E.setPath(outputFilePath);
+  E.setPath(pesOutputFilePath); // Save as PES file as well
+
+  // Load the temperature data from JSON file
+  temperatureData = loadJSONObject("sydney_temperature_2023.json");
+
+  E.beginDraw();
+  E.clear();
+
+  // Draw the four hexagons using temperature data for January and February
+  drawMonthlyHexagons("2023-01", 180, 180); // January (Top Left)
+  drawMonthlyHexagons("2023-01", 180, 540); // January (Bottom Left)
+  drawMonthlyHexagons("2023-02", 540, 180); // February (Top Right)
+  drawMonthlyHexagons("2023-02", 540, 540); // February (Bottom Right)
+
+  E.optimize(); // Slow but necessary for good output
+  E.visualize();
+  // E.endDraw(); // Uncomment to write the embroidery file
+}
+
+void drawMonthlyHexagons(String monthPrefix, float cx, float cy) {
+  // Extract temperature data from JSON
+  float extremeLow = Float.MAX_VALUE;
+  float extremeHigh = Float.MIN_VALUE;
+  float sumTemp = 0;
+  int count = 0;
+
+  JSONArray days = temperatureData.getJSONArray("days");
+
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+
+    if (date.startsWith(monthPrefix)) {
+      float tempMax = day.getFloat("tempmax");
+      float tempMin = day.getFloat("tempmin");
+
+      if (tempMax > extremeHigh) extremeHigh = tempMax;
+      if (tempMin < extremeLow) extremeLow = tempMin;
+
+      sumTemp += day.getFloat("temp");
+      count++;
+    }
+  }
+
+  float averageTemp = sumTemp / count;
+
+  // Draw the hexagons for extreme low, extreme high, average low, and average high
+  drawHexagonWithBorder(cx, cy, "Summer", "extreme", extremeLow); // Extreme Low
+  drawHexagonWithBorder(cx + 100, cy, "Summer", "extreme", extremeHigh); // Extreme High
+  drawHexagonWithBorder(cx, cy + 100, "Summer", "average", extremeLow); // Average Low
+  drawHexagonWithBorder(cx + 100, cy + 100, "Summer", "average", averageTemp); // Average Temperature
+}
+
+void drawHexagonWithBorder(float cx, float cy, String season, String type, float temperature) {
+  // Draw the border hexagon
+  E.noFill();
+  E.stroke(0);
+  E.strokeWeight(borderThickness);
+  E.strokeMode(PEmbroiderGraphics.PERPENDICULAR);
+  E.strokeSpacing(4);
+  
+  if (season.equals("Summer")) {
+    // Thicker zigzag stitch for summer border
+    E.setStitch(10, 20, 0.0);
+    E.hatchMode(PEmbroiderGraphics.SATIN);
+  }
+
+  drawHexagon(cx, cy, hexRadius + borderThickness / 2);
+
+  // Set color based on temperature for the inner hexagon
+  if (temperature <= 5) {
+    E.fill(168, 0, 107); // Dark Fuchsia
+  } else if (temperature <= 10) {
+    E.fill(138, 43, 226); // Violet
+  } else if (temperature <= 15) {
+    E.fill(135, 206, 235); // Sky Blue
+  } else if (temperature <= 20) {
+    E.fill(0, 128, 128); // Teal Green
+  } else if (temperature <= 25) {
+    E.fill(50, 205, 50); // Leaf Green
+  } else if (temperature <= 30) {
+    E.fill(255, 255, 0); // Yellow
+  } else if (temperature <= 35) {
+    E.fill(255, 165, 0); // Tangerine
+  } else {
+    E.fill(255, 0, 0); // Red
+  }
+
+  // Draw the inner hexagon (center fill)
+  E.noStroke();
+  
+  if (season.equals("Summer")) {
+    // Satin Hatch for smooth effect
+    E.setStitch(5, 10, 0.5);
+    E.hatchMode(PEmbroiderGraphics.SATIN);
+  }
+
+  drawHexagon(cx, cy, hexRadius - borderThickness);
+}
+
+void drawHexagon(float cx, float cy, float radius) {
+  float angleOffset = PI / 6; // Offset to ensure flat sides are facing each other
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = angleOffset + i * PI / 3;
+    float x = cx + cos(angle) * radius;
+    float y = cy + sin(angle) * radius;
+    E.vertex(x, y);
+  }
+  E.endShape(CLOSE);
+}

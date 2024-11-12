@@ -1,0 +1,620 @@
+Code for a Single Hexagon with Contrasting Colors:
+
+Here is a piece of code to generate one hexagon with multiple contrasting colors:
+
+void setup() {
+  size(400, 400);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("single_hexagon_design.vp3");
+  E.setPath(outputFilePath);
+  E.beginDraw();
+  E.clear();
+
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 25;
+
+  // Draw the border hexagon (Outer Layer)
+  E.stroke(color(0, 0, 255)); // Blue border color
+  E.strokeWeight(2);
+  E.fill(color(0, 0, 255, 200));
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly smaller)
+  E.stroke(color(0, 255, 0)); // Green middle color
+  E.strokeWeight(2);
+  E.fill(color(0, 255, 0, 200));
+  drawSingleHexagon(x, y, radius * 0.7);
+
+  // Draw the center hexagon (Inner Layer, larger)
+  E.stroke(color(255, 0, 0)); // Red center color
+  E.strokeWeight(2);
+  E.fill(color(255, 0, 0, 200));
+  drawSingleHexagon(x, y, radius * 0.5);
+
+  E.visualize();
+  // Uncomment the next line to save the embroidery file
+  // E.endDraw();
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+
+
+
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+final int hexSize = 25; // Radius of each hexagon
+final int rows = 14; // Number of hexagons per column (representing a fortnight)
+final int columns = 26; // Number of hexagons per row (14 fortnights)
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = (int)((columns + 1) * (2 * hexSize * 1.5)); // Adjusted width to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize * 1.5)) + 300; // Adjusted height to include spacing between hexagons and ensure all hexagons fit
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Initialize PEmbroiderGraphics
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("temperature_hexagons.vp3");
+  E.setPath(outputFilePath);
+  E.beginDraw();
+  E.clear();
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 2 * 1.5; // Adjusted for equidistant spacing between hexagons
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // Adjusted for equidistant spacing between hexagons
+
+  // Draw only the four hexagons in the top right corner
+  for (int i = 0; i < 4; i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day for the border (low temperature)
+    color borderColor;
+    if (low <= 5) {
+      borderColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (low <= 10) {
+      borderColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (low <= 15) {
+      borderColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (low <= 20) {
+      borderColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (low <= 25) {
+      borderColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (low <= 30) {
+      borderColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      borderColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor;
+    if (high <= 7.5) {
+      centerColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (high <= 22.5) {
+      centerColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    // Calculate x and y positions for each hexagon
+    int row = i / 2;
+    int col = i % 2 + (columns - 2); // Draw in the top right corner
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+
+  // Visualize the embroidery
+  E.visualize();
+  // Uncomment the next line to save the embroidery file
+  // E.endDraw();
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  E.stroke(borderColor);
+  E.strokeWeight(1);
+  E.fill(borderColor); // Removed second argument to match method signature
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly smaller)
+  E.stroke(middleColor);
+  E.strokeWeight(1);
+  E.fill(middleColor); // Removed second argument to match method signature
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  E.stroke(centerColor);
+  E.strokeWeight(1);
+  E.fill(centerColor); // Removed second argument to match method signature
+  drawSingleHexagon(x, y, radius * 0.5); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // Adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+
+
+Testing Tips:
+
+When testing, focus on ensuring thread tension is properly set. Improper tension can lead to skipped stitches or thread bunching.
+Test with different stitch types (like satin or fill) for each hexagon layer to see what looks best on your chosen fabric.
+Make sure to observe how well your fabric and stabilizer work together to hold the hexagons in place without puckering.
+Good luck with the Brother SE400! Let me know if you need more help with adjustments or testing tips.
+
+1. Basic Hexagon Shapes and Colors
+Here’s the code for a single hexagon to test different layers: border, middle, and center. It uses concentric layers to replicate your temperature gradient visualization.
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(500, 500);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Hexagon_Test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+  
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 50;
+
+  // Draw the border hexagon (Outer Layer)
+  E.strokeWeight(10);
+  E.stroke(0);
+  E.noFill();
+  E.strokeSpacing(3.0);
+  E.strokeMode(PEmbroiderGraphics.PERPENDICULAR);
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly smaller)
+  E.noStroke();
+  E.fill(0, 0, 255);
+  E.hatchMode(PEmbroiderGraphics.SATIN);
+  E.hatchSpacing(3);
+  drawSingleHexagon(x, y, radius * 0.7);
+
+  // Draw the center hexagon (Inner Layer, even smaller)
+  E.noStroke();
+  E.fill(255, 0, 0);
+  E.hatchMode(PEmbroiderGraphics.CONCENTRIC);
+  E.hatchSpacing(4);
+  drawSingleHexagon(x, y, radius * 0.4);
+
+  E.visualize();
+  E.endDraw(); // Uncomment this to write the file out for embroidery
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+2. Different Hatch Modes for Filling
+This code uses a filled hexagon with different hatch modes to check which looks best.
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(500, 500);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Hexagon_Hatch_Test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 100;
+
+  // Draw a hexagon filled with SATIN hatch
+  E.noStroke();
+  E.fill(0, 150, 255);
+  E.hatchMode(PEmbroiderGraphics.SATIN);
+  E.hatchSpacing(3);
+  drawSingleHexagon(x - 120, y, radius);
+
+  // Draw a hexagon filled with CONCENTRIC hatch
+  E.fill(255, 100, 0);
+  E.hatchMode(PEmbroiderGraphics.CONCENTRIC);
+  E.hatchSpacing(4);
+  drawSingleHexagon(x + 120, y, radius);
+
+  E.visualize();
+  E.endDraw();
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+3. Stroke and Fill Density
+You can use this code to test different strokeSpacing for the outlines:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(500, 500);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Hexagon_Stroke_Test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 70;
+
+  // Draw hexagons with different stroke spacings
+  for (int i = 0; i < 3; i++) {
+    float offset = (i - 1) * 150;
+
+    E.stroke(0);
+    E.strokeWeight(10);
+    E.noFill();
+    E.strokeMode(PEmbroiderGraphics.PERPENDICULAR);
+    E.strokeSpacing(2 + i * 2); // Varying stroke spacing: 2, 4, 6
+
+    drawSingleHexagon(x + offset, y, radius);
+  }
+
+  E.visualize();
+  E.endDraw();
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+4. Fill Density for Hatch Testing
+This code helps you adjust hatchSpacing to get the best fill density:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(500, 500);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Hexagon_Fill_Density_Test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 70;
+
+  // Draw hexagons with different hatch spacings
+  for (int i = 0; i < 3; i++) {
+    float offset = (i - 1) * 150;
+
+    E.noStroke();
+    E.fill(0, 150, 255);
+    E.hatchMode(PEmbroiderGraphics.SATIN);
+    E.hatchSpacing(2 + i * 3); // Varying hatch spacing: 2, 5, 8
+
+    drawSingleHexagon(x + offset, y, radius);
+  }
+
+  E.visualize();
+  E.endDraw();
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+5. Gradient Effect with Multiple Colors
+If you're planning to add gradients for the temperature-based colors, here's a simple approach to test that:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(500, 500);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("Hexagon_Gradient_Test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  float x = width / 2;
+  float y = height / 2;
+  float radius = 70;
+
+  // Draw a gradient hexagon using multiple layers
+  for (int i = 0; i < 3; i++) {
+    float layerRadius = radius * (1 - 0.3 * i);
+
+    E.noStroke();
+    E.fill(lerpColor(color(0, 0, 255), color(255, 0, 0), i / 2.0)); // Gradient from blue to red
+    E.hatchMode(PEmbroiderGraphics.CONCENTRIC);
+    E.hatchSpacing(3);
+
+    drawSingleHexagon(x, y, layerRadius);
+  }
+
+  E.visualize();
+  E.endDraw();
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  E.beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    E.vertex(x + xOffset, y + yOffset);
+  }
+  E.endShape(CLOSE);
+}
+Summary:
+Basic Hexagon Layers: Test different border, middle, and center fills.
+Hatch Modes: Compare SATIN and CONCENTRIC.
+Stroke Density: Vary strokeSpacing to find the best border style.
+Fill Density: Adjust hatchSpacing to achieve the desired fill.
+Gradient: Test with gradient coloring for temperature representation.
+These simplified versions will help you understand how the SE400 handles various aspects of your design without overloading the embroidery area. Good luck, and have fun stitching!
+
+
+1. Basic Shape Testing
+This example will test drawing different shapes like circles, rectangles, and polygons, using the 10-pixel per mm ratio and grouping similar colors to reduce thread changes:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(400, 400); // This is within the 4" x 4" embroidery area
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("shape_test.vp3");
+  E.setPath(outputFilePath);
+  
+  E.beginDraw();
+  E.clear();
+  
+  // Set up blue as the first color
+  E.stroke(0, 0, 255);
+  E.noFill();
+  E.strokeWeight(10);
+  E.circle(200, 100, 100); // Circle of 100 pixels diameter
+  
+  // Change color to green for the second set of shapes
+  E.stroke(0, 255, 0);
+  E.square(150, 150, 100); // Square of 100 pixels side
+  
+  // Arbitrary polygon in red
+  E.stroke(255, 0, 0);
+  E.beginShape();
+  E.vertex(100, 300);
+  E.vertex(150, 250);
+  E.vertex(200, 300);
+  E.vertex(150, 350);
+  E.endShape(CLOSE);
+  
+  E.optimize(); // Optimize before exporting
+  E.visualize(true, false, true);
+  E.endDraw();
+}
+2. Hatching Techniques
+Here is a sample to test different hatching techniques (parallel, concentric, and satin) and spacing. This will let you see which works best with your design and fabric:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(400, 400);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("hatching_test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+  
+  // Parallel Hatch (Blue)
+  E.hatchMode(PEmbroiderGraphics.PARALLEL);
+  E.hatchSpacing(5);
+  E.setStitch(3, 40, 0);
+  E.fill(0, 0, 255);
+  E.rect(50, 50, 100, 100);
+  
+  // Concentric Hatch (Red)
+  E.hatchMode(PEmbroiderGraphics.CONCENTRIC);
+  E.hatchSpacing(8);
+  E.setStitch(5, 40, 0);
+  E.fill(255, 0, 0);
+  E.circle(250, 100, 100);
+  
+  // Satin Hatch (Green)
+  E.hatchMode(PEmbroiderGraphics.SATIN);
+  E.hatchSpacing(4);
+  E.setStitch(2, 50, 0.5);
+  E.fill(0, 255, 0);
+  E.triangle(200, 250, 150, 350, 250, 350);
+
+  E.optimize();
+  E.visualize(true, false, true);
+  E.endDraw();
+}
+3. Varying Stroke Width and Spacing
+This test will create a set of lines with varying stroke weights and stitch spacing, giving insight into which combinations produce the best results:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(400, 400);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("stroke_width_spacing_test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+  
+  E.stroke(0);
+  E.noFill();
+
+  for (int i = 1; i <= 10; i++) {
+    E.strokeWeight(i * 2);
+    E.setStitch(5, 30, 0);
+    E.strokeSpacing(i);
+    E.line(50, 30 + i * 30, 350, 30 + i * 30);
+  }
+  
+  E.optimize();
+  E.visualize(true, false, true);
+  E.endDraw();
+}
+4. Text and Lettering
+Use this code to test different font sizes and alignments for your embroidery:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(400, 400);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("text_test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  E.stroke(0);
+  E.textSize(3); // Text size in mm
+  E.textAlign(CENTER, CENTER);
+  E.text("Hello", 200, 100);
+  E.text("World!", 200, 200);
+
+  E.optimize();
+  E.visualize(true, false, true);
+  E.endDraw();
+}
+5. Edge vs. Fill Stitch Testing
+This code helps test the difference between using stitches as an outline and using them to fill shapes. It uses different colors to identify areas clearly:
+
+java
+Copy code
+import processing.embroider.*;
+PEmbroiderGraphics E;
+
+void setup() {
+  size(400, 400);
+  E = new PEmbroiderGraphics(this, width, height);
+  String outputFilePath = sketchPath("edge_fill_test.vp3");
+  E.setPath(outputFilePath);
+
+  E.beginDraw();
+  E.clear();
+
+  // Outline Only (Blue)
+  E.noFill();
+  E.stroke(0, 0, 255);
+  E.strokeWeight(15);
+  E.strokeMode(PEmbroiderGraphics.PERPENDICULAR);
+  E.rect(50, 50, 100, 100);
+
+  // Filled with Satin Hatch (Green)
+  E.fill(0, 255, 0);
+  E.noStroke();
+  E.hatchMode(PEmbroiderGraphics.SATIN);
+  E.hatchSpacing(3);
+  E.rect(200, 50, 100, 100);
+
+  E.optimize();
+  E.visualize(true, false, true);
+  E.endDraw();
+}
+These codes cover the essentials for testing different design aspects before you actually use the embroidery machine. Each will help you understand how different stitch properties and settings perform on fabric, ensuring your final design looks as intended.

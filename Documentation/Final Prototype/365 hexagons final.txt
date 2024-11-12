@@ -1,0 +1,605 @@
+365 hexagons final
+
+final int hexSize = 25; // Radius of each hexagon
+final int rows = 14; // Number of hexagons per row (representing a fortnight)
+final int columns = 26; // Number of hexagons per column (14 fortnights)
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = (int)((rows + 1) * (2 * hexSize * 1.5)) + 2000; // Adjusted width to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(columns * (sqrt(3) * hexSize * 1.5)) + 300; // Adjusted height to include spacing between hexagons and ensure all hexagons fit
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 2 * 1.5; // Adjusted for equidistant spacing between hexagons
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // Adjusted for equidistant spacing between hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day for the border (low temperature)
+    color borderColor;
+    if (low <= 5) {
+      borderColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (low <= 10) {
+      borderColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (low <= 15) {
+      borderColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (low <= 20) {
+      borderColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (low <= 25) {
+      borderColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (low <= 30) {
+      borderColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      borderColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor;
+    if (high <= 7.5) {
+      centerColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (high <= 22.5) {
+      centerColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    // Calculate x and y positions for each hexagon
+    int row = i / rows;
+    int col = i % rows;
+    float x = xOffset + row * horizontalSpacing;
+    float y = yOffset + col * verticalSpacing;
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(1);
+  fill(borderColor, 191); // 75% opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly smaller)
+  stroke(middleColor);
+  strokeWeight(1);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.5); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // Adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // radius of each hexagon (distance from center to any corner)
+final int rows = 14; // number of hexagons per row (representing a fortnight)
+final int columns = 26; // number of hexagons per column (14 fortnights)
+
+// set up a larger canvas size to fit all hexagons properly
+// canvas width adjusted to include spacing between hexagons and ensure all hexagons fit properly
+final int canvasWidth = (int)((rows + 1) * (2 * hexSize * 1.5)) + 2000; 
+// canvas height adjusted to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(columns * (sqrt(3) * hexSize * 1.5)) + 300; 
+
+void settings() {
+  size(canvasWidth, canvasHeight); // set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // set the background color to white
+
+  // load the JSON file containing temperature data from Visual Crossing Weather API
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // get the array of daily data from the JSON object
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // set up drawing parameters for positioning hexagons
+  int xOffset = 40; // x-axis start offset to provide some padding
+  int yOffset = 50; // y-axis start offset to provide some padding
+  float horizontalSpacing = hexSize * 2 * 1.5; // horizontal spacing between hexagons to ensure they don't overlap
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // vertical spacing between hexagons to ensure they don't overlap
+
+  // loop through the data and draw hexagons for each day in the dataset
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // map temperatures to gradient colors specific to each day for the border (low temperature)
+    // gradient colors help visualize the temperature change; the mapping is inspired by a typical color gradient
+    // ranging from cool (pink, blue) to warm (orange, red)
+    color borderColor;
+    if (low <= 5) {
+      borderColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // baby pink to fuchsia for very low temperatures
+    } else if (low <= 10) {
+      borderColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // violet to indigo for low temperatures
+    } else if (low <= 15) {
+      borderColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // blue to light green for moderate temperatures
+    } else if (low <= 20) {
+      borderColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // light green to yellow for warm temperatures
+    } else if (low <= 25) {
+      borderColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // yellow to orange for warmer temperatures
+    } else if (low <= 30) {
+      borderColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // orange to red for hot temperatures
+    } else {
+      borderColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // red to dark red for very hot temperatures
+    }
+
+    color middleColor = color(255); // set the middle color to white for now (average temperature layer)
+
+    // determine center color based on the high temperature for the day
+    // this provides an additional visual indicator for hotter or colder days
+    color centerColor;
+    if (high <= 7.5) {
+      centerColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // baby pink to fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // violet to indigo for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // blue to light green for moderate temperatures
+    } else if (high <= 22.5) {
+      centerColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // light green to yellow for warm temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // yellow to orange for warmer temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // orange to red for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // red to dark red for very hot temperatures
+    }
+
+    // calculate x and y positions for each hexagon
+    int row = i / rows; // determine which row the hexagon belongs to
+    int col = i % rows; // determine the column for the hexagon
+    float x = xOffset + row * horizontalSpacing; // calculate x position based on row and spacing
+    float y = yOffset + col * verticalSpacing; // calculate y position based on column and spacing
+
+    // draw the hexagon layers for the given day's temperature
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // draw the border hexagon (outer layer)
+  stroke(borderColor); // set border color based on temperature
+  strokeWeight(1);
+  fill(borderColor, 191); // set fill color with 75% opacity for the border color
+  drawSingleHexagon(x, y, radius); // draw outer layer hexagon
+
+  // draw the middle hexagon (middle layer, slightly smaller)
+  stroke(middleColor); // set stroke color to middle color
+  strokeWeight(1);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // draw middle layer with reduced radius for a nested effect
+
+  // draw the center hexagon (inner layer)
+  stroke(centerColor); // set stroke color to center color based on highest temperature
+  strokeWeight(1);
+  fill(centerColor, 200); // slight opacity for the center color to emphasize it
+  drawSingleHexagon(x, y, radius * 0.5); // draw inner hexagon with smaller radius for emphasis
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius; // calculate x offset for vertex
+    float yOffset = sin(angle) * radius; // calculate y offset for vertex
+    vertex(x + xOffset, y + yOffset); // set vertex point
+  }
+  endShape(CLOSE); // close the hexagon shape
+}
+
+
+final int hexSize = 25; // radius of each hexagon (distance from center to any corner)
+final int rows = 14; // number of hexagons per row (representing a fortnight)
+final int columns = 26; // number of hexagons per column (14 fortnights)
+
+// set up a larger canvas size to fit all hexagons properly
+// canvas width adjusted to include spacing between hexagons and make sure all hexagons fit properly
+final int canvasWidth = (int)((rows + 1) * (2 * hexSize * 1.5)) + 2000; 
+// canvas height adjusted to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(columns * (sqrt(3) * hexSize * 1.5)) + 300; 
+
+void settings() {
+  size(canvasWidth, canvasHeight); // set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // set the background color to white
+
+  // load the JSON file containing temperature data from Visual Crossing Weather API
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // get the array of daily data from the JSON object
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // set up drawing parameters for positioning hexagons
+  int xOffset = 40; // x-axis start offset to provide some padding
+  int yOffset = 50; // y-axis start offset to provide some padding
+  float horizontalSpacing = hexSize * 2 * 1.5; // horizontal spacing between hexagons to ensure they don't overlap
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // vertical spacing between hexagons to ensure they don't overlap
+
+  // loop through the data and draw hexagons for each day in the dataset
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // map temperatures to gradient colours specific to each day for the border (low temperature)
+    // gradient colours help visualize the temperature change; the mapping is inspired by a typical colour gradient
+    // ranging from cool (pink, blue) to warm (orange, red)
+    color bordercolor;
+    if (low <= 5) {
+      bordercolor = lerpcolor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // baby pink to fuchsia for very low temperatures
+    } else if (low <= 10) {
+      bordercolor = lerpcolor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // violet to indigo for low temperatures
+    } else if (low <= 15) {
+      bordercolor = lerpcolor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // blue to light green for moderate temperatures
+    } else if (low <= 20) {
+      bordercolor = lerpcolor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // light green to yellow for warm temperatures
+    } else if (low <= 25) {
+      bordercolor = lerpcolor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // yellow to orange for warmer temperatures
+    } else if (low <= 30) {
+      bordercolor = lerpcolor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // orange to red for hot temperatures
+    } else {
+      bordercolor = lerpcolor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // red to dark red for very hot temperatures
+    }
+
+    color middlecolor = color(255); // set the middle color to white for now (average temperature layer)
+
+    // determine center colour based on the high temperature for the day
+    // this gives a visual indicator for hotter or colder days!
+    //inspired by original temperature blanket designs, which are linked on Github
+    color centercolor;
+    if (high <= 7.5) {
+      centercolor = lerpcolor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // baby pink to fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centercolor = lerpcolor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // violet to indigo for low temperatures
+    } else if (high <= 20) {
+      centercolor = lerpcolor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // blue to light green for moderate temperatures
+    } else if (high <= 22.5) {
+      centercolor = lerpcolor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // light green to yellow for warm temperatures
+    } else if (high <= 25) {
+      centercolor = lerpcolor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // yellow to orange for warmer temperatures
+    } else if (high <= 30) {
+      centercolor = lerpcolor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // orange to red for hot temperatures
+    } else {
+      centercolor = lerpcolor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // red to dark red for very hot temperatures
+    }
+
+    // calculate x and y positions for each hexagon
+    int row = i / rows; // determine which row the hexagon belongs to
+    int col = i % rows; // determine the column for the hexagon
+    float x = xOffset + row * horizontalSpacing; // calculate x position based on row and spacing
+    float y = yOffset + col * verticalSpacing; // calculate y position based on column and spacing
+
+    // draw the hexagon layers for the given day's temperature
+    drawHexagon(x, y, hexSize, bordercolor, middlecolor, centercolor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color bordercolor, color middlecolor, color centercolor) {
+  // draw the border hexagon (outer layer)
+  stroke(bordercolor); // set border colour based on temperature
+  strokeWeight(1);
+  fill(bordercolor, 191); // set fill colour with 75% opacity for the border color
+  drawSingleHexagon(x, y, radius); // draw outer layer hexagon
+
+  // draw the middle hexagon (middle layer, slightly smaller)
+  stroke(middlecolor); // set stroke colour to middle colour
+  strokeWeight(1);
+  fill(middlecolor);
+  drawSingleHexagon(x, y, radius * 0.7); // draw middle layer with reduced radius for a nested effect
+
+  // draw the center hexagon (inner layer)
+  stroke(centercolor); // set stroke colour to center colour based on highest temperature
+  strokeWeight(1);
+  fill(centercolor, 200); // slight opacity for the center colour to emphasize it
+  drawSingleHexagon(x, y, radius * 0.5); // draw inner hexagon with smaller radius for emphasis
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius; // calculate x offset for vertex
+    float yOffset = sin(angle) * radius; // calculate y offset for vertex
+    vertex(x + xOffset, y + yOffset); // set vertex point
+  }
+  endShape(CLOSE); // close the hexagon shape
+}
+//done!!!
+
+
+final int hexSize = 25; // radius of each hexagon (distance from center to any corner)
+final int rows = 14; // number of hexagons per row (representing a fortnight)
+final int columns = 26; // number of hexagons per column (14 fortnights)
+
+// set up a larger canvas size to fit all hexagons properly
+// canvas width adjusted to include spacing between hexagons and make sure all hexagons fit properly
+final int canvasWidth = (int)((rows + 1) * (2 * hexSize * 1.5)) + 2000 + 30; // add 30 pixels for a bit more width
+// canvas height adjusted to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(columns * (sqrt(3) * hexSize * 1.5)) + 300; 
+
+void settings() {
+  size(canvasWidth, canvasHeight); // set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // set the background color to white
+
+  // load the JSON file containing temperature data from Visual Crossing Weather API
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // get the array of daily data from the JSON object
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // set up drawing parameters for positioning hexagons
+  int xOffset = 40; // x-axis start offset to provide some padding
+  int yOffset = 50; // y-axis start offset to provide some padding
+  float horizontalSpacing = hexSize * 2 * 1.5; // horizontal spacing between hexagons to ensure they don't overlap
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // vertical spacing between hexagons to ensure they don't overlap
+
+  // loop through the data and draw hexagons for each day in the dataset
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // map temperatures to gradient colours specific to each day for the border (low temperature)
+    // gradient colours help visualize the temperature change; the mapping is inspired by a typical colour gradient
+    // ranging from cool (pink, blue) to warm (orange, red)
+    color borderColor;
+    if (low <= 5) {
+      borderColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (low <= 10) {
+      borderColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (low <= 15) {
+      borderColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (low <= 20) {
+      borderColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (low <= 25) {
+      borderColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (low <= 30) {
+      borderColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      borderColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    
+    // determine center colour based on the high temperature for the day
+    // this gives a visual indicator for hotter or colder days!
+    //inspired by original temperature blanket designs, which are linked on Github
+    color centerColor;
+    if (high <= 7.5) {
+      centerColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (high <= 22.5) {
+      centerColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    // calculate x and y positions for each hexagon
+    int row = i / rows; // determine which row the hexagon belongs to
+    int col = i % rows; // determine the column for the hexagon
+    float x = xOffset + row * horizontalSpacing; // calculate x position based on row and spacing
+    float y = yOffset + col * verticalSpacing; // calculate y position based on column and spacing
+
+     // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color bordercolor, color middlecolor, color centercolor) {
+  // draw the border hexagon (outer layer)
+  stroke(bordercolor); // set border colour based on temperature
+  strokeWeight(1);
+  fill(bordercolor, 191); // set fill colour with 75% opacity for the border color
+  drawSingleHexagon(x, y, radius); // draw outer layer hexagon
+
+  // draw the middle hexagon (middle layer, slightly smaller)
+  stroke(middlecolor); // set stroke colour to middle colour
+  strokeWeight(1);
+  fill(middlecolor);
+  drawSingleHexagon(x, y, radius * 0.7); // draw middle layer with reduced radius for a nested effect
+
+  // draw the center hexagon (inner layer)
+  stroke(centercolor); // set stroke colour to center colour based on highest temperature
+  strokeWeight(1);
+  fill(centercolor, 200); // slight opacity for the center colour to emphasize it
+  drawSingleHexagon(x, y, radius * 0.5); // draw inner hexagon with smaller radius for emphasis
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius; // calculate x offset for vertex
+    float yOffset = sin(angle) * radius; // calculate y offset for vertex
+    vertex(x + xOffset, y + yOffset); // set vertex point
+  }
+  endShape(CLOSE); // close the hexagon shape
+}
+//done!!!
+
+
+final int hexSize = 24; // radius of each hexagon (distance from center to any corner)
+final int rows = 14; // number of hexagons per row (representing a fortnight)
+final int columns = 26; // number of hexagons per column (14 fortnights)
+
+// set up a larger canvas size to fit all hexagons properly
+// canvas width adjusted to include spacing between hexagons and make sure all hexagons fit properly
+final int canvasWidth = (int)((rows + 1) * (2 * hexSize * 1.5)) + 2000 + 30; // add 30 pixels for a bit more width
+// canvas height adjusted to include spacing between hexagons and ensure all hexagons fit
+final int canvasHeight = (int)(columns * (sqrt(3) * hexSize * 1.5)) + 300; 
+
+void settings() {
+  size(canvasWidth, canvasHeight); // set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // set the background color to white
+  save("final_365_hexagons.png");
+
+  // load the JSON file containing temperature data from Visual Crossing Weather API
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // get the array of daily data from the JSON object
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // set up drawing parameters for positioning hexagons
+  int xOffset = 40; // x-axis start offset to provide some padding
+  int yOffset = 50; // y-axis start offset to provide some padding
+  float horizontalSpacing = hexSize * 2 * 1.5; // horizontal spacing between hexagons to ensure they don't overlap
+  float verticalSpacing = sqrt(3) * hexSize * 1.5; // vertical spacing between hexagons to ensure they don't overlap
+
+  // loop through the data and draw hexagons for each day in the dataset
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // map temperatures to gradient colours specific to each day for the border (low temperature)
+    // gradient colours help visualize the temperature change; the mapping is inspired by a typical colour gradient
+    // ranging from cool (pink, blue) to warm (orange, red)
+    color borderColor;
+    if (low <= 5) {
+      borderColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(low, 0, 5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (low <= 10) {
+      borderColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(low, 5, 10, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (low <= 15) {
+      borderColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(low, 10, 15, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (low <= 20) {
+      borderColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(low, 15, 20, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (low <= 25) {
+      borderColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(low, 20, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (low <= 30) {
+      borderColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(low, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      borderColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(low, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    
+    // determine center colour based on the high temperature for the day
+    // this gives a visual indicator for hotter or colder days!
+    //inspired by original temperature blanket designs, which are linked on Github
+    color centerColor;
+    if (high <= 7.5) {
+      centerColor = lerpColor(color(255, 182, 193), color(255, 0, 255), map(high, 0, 7.5, 0, 1)); // Baby Pink to Fuchsia for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 7.5, 15, 0, 1)); // Violet to Indigo for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(144, 238, 144), map(high, 15, 20, 0, 1)); // Blue to Light Green for moderate temperatures
+    } else if (high <= 22.5) {
+      centerColor = lerpColor(color(144, 238, 144), color(255, 255, 0), map(high, 20, 22.5, 0, 1)); // Light Green to Yellow for warm temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 22.5, 25, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 25, 30, 0, 1)); // Orange to Red for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 0, 0), color(139, 0, 0), map(high, 30, 40, 0, 1)); // Red to Dark Red for very hot temperatures
+    }
+
+    // calculate x and y positions for each hexagon
+    int row = i / rows; // determine which row the hexagon belongs to
+    int col = i % rows; // determine the column for the hexagon
+    float x = xOffset + row * horizontalSpacing; // calculate x position based on row and spacing
+    float y = yOffset + col * verticalSpacing; // calculate y position based on column and spacing
+
+     // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color bordercolor, color middlecolor, color centercolor) {
+  // draw the border hexagon (outer layer)
+  stroke(bordercolor); // set border colour based on temperature
+  strokeWeight(1);
+  fill(bordercolor, 191); // set fill colour with 75% opacity for the border color
+  drawSingleHexagon(x, y, radius); // draw outer layer hexagon
+
+  // draw the middle hexagon (middle layer, slightly smaller)
+  stroke(middlecolor); // set stroke colour to middle colour
+  strokeWeight(1);
+  fill(middlecolor);
+  drawSingleHexagon(x, y, radius * 0.7); // draw middle layer with reduced radius for a nested effect
+
+  // draw the center hexagon (inner layer)
+  stroke(centercolor); // set stroke colour to center colour based on highest temperature
+  strokeWeight(1);
+  fill(centercolor, 200); // slight opacity for the center colour to emphasize it
+  drawSingleHexagon(x, y, radius * 0.5); // draw inner hexagon with smaller radius for emphasis
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = PI / 3 * i; // adjust angle for flat edge alignment
+    float xOffset = cos(angle) * radius; // calculate x offset for vertex
+    float yOffset = sin(angle) * radius; // calculate y offset for vertex
+    vertex(x + xOffset, y + yOffset); // set vertex point
+  }
+  endShape(CLOSE); // close the hexagon shape
+}
+//done!!!
+

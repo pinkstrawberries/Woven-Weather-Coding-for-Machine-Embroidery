@@ -1,0 +1,121 @@
+24 hexagons
+
+import json
+from collections import defaultdict
+
+# Load the data from the JSON file
+with open('sydney_temperature_2023.json', 'r') as f:
+    data = json.load(f)
+
+days = data['days']
+
+# Initialize dictionaries to store monthly temperature data
+monthly_data = defaultdict(lambda: {'tempmax': [], 'tempmin': []})
+
+# Populate monthly temperature data
+for day in days:
+    month = day['datetime'].split('-')[1]  # Extract the month from the date
+    monthly_data[month]['tempmax'].append(day['tempmax'])
+    monthly_data[month]['tempmin'].append(day['tempmin'])
+
+# Calculate the extreme and average temperatures for each month
+monthly_summary = {}
+for month, temps in monthly_data.items():
+    tempmax_values = temps['tempmax']
+    tempmin_values = temps['tempmin']
+    
+    extreme_high = max(tempmax_values)
+    extreme_low = min(tempmin_values)
+    avg_high = sum(tempmax_values) / len(tempmax_values)
+    avg_low = sum(tempmin_values) / len(tempmin_values)
+    
+    monthly_summary[month] = {
+        'extreme_high': extreme_high,
+        'extreme_low': extreme_low,
+        'avg_high': avg_high,
+        'avg_low': avg_low
+    }
+
+# Print the summary for each month
+for month in sorted(monthly_summary.keys()):
+    summary = monthly_summary[month]
+    print(f"Month: {month}")
+    print(f"  Extreme High: {summary['extreme_high']:.1f} C")
+    print(f"  Extreme Low: {summary['extreme_low']:.1f} C")
+    print(f"  Average High: {summary['avg_high']:.1f} C")
+    print(f"  Average Low: {summary['avg_low']:.1f} C")
+    print()
+
+
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+
+JSONObject data;
+HashMap<String, HashMap<String, ArrayList<Float>>> monthlyData = new HashMap<>();
+
+void setup() {
+  // Load the data from the JSON file
+  data = loadJSONObject("sydney_temperature_2023.json");
+  JSONArray days = data.getJSONArray("days");
+
+  // Initialize the monthly data structure
+  for (int i = 1; i <= 12; i++) {
+    String monthStr = String.format("%02d", i);
+    HashMap<String, ArrayList<Float>> temps = new HashMap<>();
+    temps.put("tempmax", new ArrayList<Float>());
+    temps.put("tempmin", new ArrayList<Float>());
+    monthlyData.put(monthStr, temps);
+  }
+
+  // Populate monthly temperature data
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String month = day.getString("datetime").split("-")[1];
+    float tempMax = day.getFloat("tempmax");
+    float tempMin = day.getFloat("tempmin");
+
+    monthlyData.get(month).get("tempmax").add(tempMax);
+    monthlyData.get(month).get("tempmin").add(tempMin);
+  }
+
+  // Calculate the extreme and average temperatures for each month
+  HashMap<String, HashMap<String, Float>> monthlySummary = new HashMap<>();
+
+  for (String month : monthlyData.keySet()) {
+    ArrayList<Float> tempMaxValues = monthlyData.get(month).get("tempmax");
+    ArrayList<Float> tempMinValues = monthlyData.get(month).get("tempmin");
+
+    float extremeHigh = Collections.max(tempMaxValues);
+    float extremeLow = Collections.min(tempMinValues);
+    float avgHigh = average(tempMaxValues);
+    float avgLow = average(tempMinValues);
+
+    HashMap<String, Float> summary = new HashMap<>();
+    summary.put("extreme_high", extremeHigh);
+    summary.put("extreme_low", extremeLow);
+    summary.put("avg_high", avgHigh);
+    summary.put("avg_low", avgLow);
+
+    monthlySummary.put(month, summary);
+  }
+
+  // Print the summary for each month
+  for (String month : monthlySummary.keySet()) {
+    HashMap<String, Float> summary = monthlySummary.get(month);
+    println("Month: " + month);
+    println("  Extreme High: " + summary.get("extreme_high") + " C");
+    println("  Extreme Low: " + summary.get("extreme_low") + " C");
+    println("  Average High: " + summary.get("avg_high") + " C");
+    println("  Average Low: " + summary.get("avg_low") + " C");
+    println();
+  }
+}
+
+float average(ArrayList<Float> values) {
+  float sum = 0;
+  for (Float value : values) {
+    sum += value;
+  }
+  return sum / values.size();
+}

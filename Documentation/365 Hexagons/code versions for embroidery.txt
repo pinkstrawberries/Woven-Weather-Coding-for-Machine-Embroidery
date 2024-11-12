@@ -1,0 +1,2053 @@
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 20), color(173, 216, 230), map(low, 0, 25, 0, 1)); // Dark Blue to Light Blue for Border (Lowest Temperature)
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor;
+    if (high <= 10) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 0, 10, 0, 1)); // Violet to Indigo for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(75, 0, 130), color(0, 0, 255), map(high, 10, 15, 0, 1)); // Indigo to Blue for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(0, 255, 0), map(high, 15, 20, 0, 1)); // Blue to Green for moderate temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(0, 255, 0), color(255, 255, 0), map(high, 20, 25, 0, 1)); // Green to Yellow for warm temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 25, 30, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 30, 40, 0, 1)); // Orange to Red for very hot temperatures
+    }
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.6); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.8); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 20), color(173, 216, 230), map(low, 0, 25, 0, 1)); // Dark Blue to Light Blue for Border (Lowest Temperature)
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor;
+    if (high <= 10) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 0, 10, 0, 1)); // Violet to Indigo for very low temperatures
+    } else if (high <= 15) {
+      centerColor = lerpColor(color(75, 0, 130), color(0, 0, 255), map(high, 10, 15, 0, 1)); // Indigo to Blue for low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(0, 0, 255), color(0, 255, 0), map(high, 15, 20, 0, 1)); // Blue to Green for moderate temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(0, 255, 0), color(255, 255, 0), map(high, 20, 25, 0, 1)); // Green to Yellow for warm temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 127, 0), map(high, 25, 30, 0, 1)); // Yellow to Orange for warmer temperatures
+    } else {
+      centerColor = lerpColor(color(255, 127, 0), color(255, 0, 0), map(high, 30, 40, 0, 1)); // Orange to Red for very hot temperatures
+    }
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.6); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.8); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 20), color(173, 216, 230), map(low, 5, 25, 0, 1)); // Dark Blue to Light Blue for Border (Lowest Temperature)
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor;
+    if (high <= 10) {
+      centerColor = lerpColor(color(148, 0, 211), color(75, 0, 130), map(high, 5, 10, 0, 1)); // Violet to Indigo for very low temperatures
+    } else if (high <= 20) {
+      centerColor = lerpColor(color(75, 0, 130), color(0, 0, 255), map(high, 10, 20, 0, 1)); // Indigo to Blue for low temperatures
+    } else if (high <= 25) {
+      centerColor = lerpColor(color(0, 0, 255), color(0, 128, 0), map(high, 20, 25, 0, 1)); // Blue to Green for moderate temperatures
+    } else if (high <= 30) {
+      centerColor = lerpColor(color(0, 128, 0), color(255, 255, 0), map(high, 25, 30, 0, 1)); // Green to Yellow for warm temperatures
+    } else if (high <= 35) {
+      centerColor = lerpColor(color(255, 255, 0), color(255, 165, 0), map(high, 30, 35, 0, 1)); // Yellow to Orange for hot temperatures
+    } else {
+      centerColor = lerpColor(color(255, 165, 0), color(255, 0, 0), map(high, 35, 45, 0, 1)); // Orange to Red for very hot temperatures
+    }
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.6); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.8); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 20), color(173, 216, 230), map(low, 5, 25, 0, 1)); // Dark Blue to Light Blue for Border (Lowest Temperature)
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor = lerpColor(color(255, 0, 0), color(255, 165, 0), map(high, 5, 15, 0, 0.2)); // Red to Orange for first segment
+    centerColor = lerpColor(centerColor, color(255, 255, 0), map(high, 15, 25, 0.2, 0.4)); // Orange to Yellow for second segment
+    centerColor = lerpColor(centerColor, color(0, 128, 0), map(high, 25, 30, 0.4, 0.6)); // Yellow to Green for third segment
+    centerColor = lerpColor(centerColor, color(0, 0, 255), map(high, 30, 35, 0.6, 0.8)); // Green to Blue for fourth segment
+    centerColor = lerpColor(centerColor, color(75, 0, 130), map(high, 35, 45, 0.8, 1)); // Blue to Indigo for final segment
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.6); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.8); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 20), color(173, 216, 230), map(low, 5, 25, 0, 1)); // Dark Blue to Light Blue for Border (Lowest Temperature)
+    color middleColor = color(255); // Set the middle color to white for now (Average Temperature)
+    color centerColor = lerpColor(color(148, 0, 211), color(255, 0, 0), map(high, 5, 45, 0, 1)); // Full Rainbow from Violet to Red for Center (Highest Temperature)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.6); // Middle layer smaller to make center more prominent
+
+  // Draw the center hexagon (Inner Layer, larger)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.8); // Larger center for emphasis on highest temperature
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day with extended temperature ranges
+    color borderColor = lerpColor(color(0, 0, 100), color(75, 0, 130), map(low, 5, 45, 0, 1)); // Dark Blue to Indigo for Border (Low Temperature)
+    color middleColor = lerpColor(color(173, 216, 230), color(255, 165, 0), map(avg, 5, 45, 0, 0.5)); // Light Blue to Orange (halfway for Average Temperature)
+    middleColor = lerpColor(middleColor, color(60, 179, 113), map(avg, 5, 45, 0.5, 1)); // Continue gradient from Orange to Medium Sea Green for Average Temperature
+    color centerColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 5, 45, 0, 1)); // Bright Yellow to Dark Red for Center (High Temperature)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer size for better visibility
+
+  // Draw the center hexagon (Inner Layer, smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.3); // Smaller center for visual effect
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 50), color(0, 0, 255), map(low, 5, 25, 0, 1)); // Dark Blue to Blue for Border (Low Temperature)
+    color middleColor = lerpColor(color(173, 216, 230), color(0, 255, 0), map(avg, 15, 30, 0, 0.5)); // Light Blue to Green (halfway for Average Temperature)
+    middleColor = lerpColor(middleColor, color(173, 255, 47), map(avg, 15, 30, 0.5, 1)); // Continue gradient from Green to Greenish-Yellow for Average Temperature
+    color centerColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 20, 45, 0, 1)); // Bright Yellow to Dark Red for Center (High Temperature)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer size for better visibility
+
+  // Draw the center hexagon (Inner Layer, smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.3); // Smaller center for visual effect
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+// Adjust the average temperature mapping range to ensure greater color differences.
+color middleColor = lerpColor(color(173, 216, 230), color(0, 255, 0), map(avg, 15, 30, 0, 1)); // Light Blue to Green for Average Layer
+middleColor = lerpColor(middleColor, color(173, 255, 47), map(avg, 15, 30, 0, 1)); // Green to Greenish-Yellow to emphasize differences
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2.0; // Calculate the average temperature for the day (using 2.0 to ensure float division)
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 50), color(0, 0, 255), map(low, 5, 25, 0, 1)); // Dark Blue to Blue for Border
+    color middleColor = lerpColor(color(173, 216, 230), color(0, 255, 0), map(avg, 10, 35, 0, 0.5)); // Light Blue to Green (halfway)
+    middleColor = lerpColor(middleColor, color(173, 255, 47), map(avg, 10, 35, 0.5, 1)); // Continue gradient from Green to Greenish-Yellow
+    color centerColor = lerpColor(color(255, 255, 0), color(139, 0, 0), map(high, 15, 45, 0, 1)); // Bright Yellow to Dark Red for Center
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer size for better visibility
+
+  // Draw the center hexagon (Inner Layer, smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.3); // Smaller center for visual effect
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2; // Calculate the average temperature for the day
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 50), color(0, 0, 255), map(low, 5, 25, 0, 1)); // Dark Blue to Blue for Border
+    color middleColor = lerpColor(color(173, 216, 230), color(0, 255, 0), map(avg, 10, 35, 0, 0.5)); // Light Blue to Green (halfway)
+    middleColor = lerpColor(middleColor, color(173, 255, 47), map(avg, 10, 35, 0.5, 1)); // Continue gradient from Green to Greenish-Yellow
+    color centerColor = lerpColor(color(255, 255, 0), color(139, 0, 0), map(high, 15, 45, 0, 1)); // Bright Yellow to Dark Red for Center
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7); // Middle layer size for better visibility
+
+  // Draw the center hexagon (Inner Layer, smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.3); // Smaller center for visual effect
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2; // Calculate the average temperature for the day
+
+    // Map temperatures to gradient colors specific to each day
+    color borderColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1)); // Coldest (Border)
+    color middleColor = lerpColor(color(100, 255, 100), color(255, 255, 0), map(avg, 10, 35, 0, 1)); // Average (Middle)
+    color centerColor = lerpColor(color(255, 165, 0), color(255, 0, 0), map(high, 15, 45, 0, 1)); // Hottest (Center)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.8); // Make the middle layer larger than before for more visibility
+
+  // Draw the center hexagon (Inner Layer, even smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.5); // Keep the center relatively small
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2; // Calculate the average temperature
+
+    // Map temperatures to gradient colors
+    color borderColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1)); // Coldest (Border)
+    color middleColor = lerpColor(color(100, 255, 100), color(255, 255, 0), map(avg, 10, 35, 0, 1)); // Average (Middle) with a more distinct color
+    color centerColor = lerpColor(color(255, 165, 0), color(255, 0, 0), map(high, 15, 45, 0, 1)); // Hottest (Center)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor, 180); // Slight opacity for the border color
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly larger)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.8); // Make the middle layer larger than before for more visibility
+
+  // Draw the center hexagon (Inner Layer, even smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor, 200); // Slight opacity for the center color
+  drawSingleHexagon(x, y, radius * 0.5); // Keep the center relatively small
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    float avg = (high + low) / 2; // Calculate the average temperature
+
+    // Map temperatures to gradient colors
+    color borderColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1)); // Coldest (Border)
+    color middleColor = lerpColor(color(255, 255, 0), color(255, 165, 0), map(avg, 10, 35, 0, 1)); // Average (Middle)
+    color centerColor = lerpColor(color(255, 165, 0), color(255, 0, 0), map(high, 15, 45, 0, 1)); // Hottest (Center)
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon layers
+    drawHexagon(x, y, hexSize, borderColor, middleColor, centerColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color borderColor, color middleColor, color centerColor) {
+  // Draw the border hexagon (Outer Layer)
+  stroke(borderColor);
+  strokeWeight(3);
+  fill(borderColor);
+  drawSingleHexagon(x, y, radius);
+
+  // Draw the middle hexagon (Middle Layer, slightly smaller)
+  stroke(middleColor);
+  strokeWeight(2);
+  fill(middleColor);
+  drawSingleHexagon(x, y, radius * 0.7);
+
+  // Draw the center hexagon (Inner Layer, even smaller)
+  stroke(centerColor);
+  strokeWeight(1);
+  fill(centerColor);
+  drawSingleHexagon(x, y, radius * 0.4);
+}
+
+void drawSingleHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up a larger canvas size to fit all hexagons properly
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100; // Calculate height dynamically based on rows
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.75; // Adjusted for better spacing to avoid overlap
+  float verticalSpacing = sqrt(3) * hexSize; // Vertical spacing for hexagons
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to gradient colors for better contrast
+    // High temperature (red for hot) and low temperature (blue for cold)
+    color highColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 15, 45, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(3); // Thick border for better visibility
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row (you can adjust this)
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = 1000; // Fixed canvas height
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to gradient colors for better contrast
+    // High temperature (red for hot) and low temperature (blue for cold)
+    color highColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 15, 45, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(3); // Increase the stroke weight to make the border thicker
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row (you can adjust this)
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = 1000; // Fixed canvas height
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to gradient colors for better contrast
+    // High temperature (red for hot) and low temperature (blue for cold)
+    color highColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 15, 45, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(1.5); // Make the border slightly more visible
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row (you can adjust this)
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = 1000; // Fixed canvas height
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to gradient colors for better contrast
+    // High temperature (red for hot) and low temperature (blue for cold)
+    color highColor = lerpColor(color(255, 255, 0), color(255, 0, 0), map(high, 15, 45, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(0, 255, 255), map(low, 5, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(1.5); // Make the border slightly more visible
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row (you can adjust this)
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = 1000; // Fixed canvas height
+
+void settings() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size here, using settings()
+}
+
+void setup() {
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+final int hexSize = 25; // Radius of each hexagon
+final int columns = 15; // Number of hexagons per row (you can adjust this)
+final int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+final int canvasWidth = 900; // Fixed canvas width
+final int canvasHeight = 1000; // Fixed canvas height
+
+void setup() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size, must be the first line
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+int hexSize = 25; // Radius of each hexagon
+int columns = 15; // Number of hexagons per row (you can adjust this)
+int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+// Set up the canvas size to accommodate all hexagons
+int canvasWidth = (int)(columns * hexSize * 1.5) + 50;
+int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100;
+
+void setup() {
+  size(canvasWidth, canvasHeight); // Set up the canvas size, this must be the first line
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  JSONObject jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+JSONObject jsonData;
+
+void setup() {
+  // Increase canvas size to fit all hexagons (assuming 365 days)
+  int hexSize = 25; // Radius of each hexagon
+  int columns = 15; // Number of hexagons per row (you can adjust this)
+  int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+
+  // Set up the canvas size to accommodate all hexagons, cast to int to fix type mismatch
+  int canvasWidth = (int)(columns * hexSize * 1.5) + 50;
+  int canvasHeight = (int)(rows * (sqrt(3) * hexSize)) + 100;
+  size(canvasWidth, canvasHeight);
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+JSONObject jsonData;
+
+void setup() {
+  // Increase canvas size to fit all hexagons (assuming 365 days)
+  int hexSize = 25; // Radius of each hexagon
+  int columns = 15; // Number of hexagons per row (you can adjust this)
+  int rows = ceil(365.0 / columns); // Calculate number of rows to fit all days
+  
+  // Set up the canvas size to accommodate all hexagons
+  int canvasWidth = columns * hexSize * 1.5 + 50;
+  int canvasHeight = rows * (int)(sqrt(3) * hexSize) + 100;
+  size(canvasWidth, canvasHeight);
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+JSONObject jsonData;
+
+void setup() {
+  size(800, 800); // Set the size of your canvas
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int hexSize = 25; // Radius of each hexagon
+  int xOffset = 40; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  int columns = 10; // Number of hexagons per row
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to a gradient color: blue (cold) to red (hot)
+    color highColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(high, 10, 40, 0, 1));
+    color lowColor = lerpColor(color(0, 0, 255), color(255, 0, 0), map(low, 0, 25, 0, 1));
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(lerpColor(strokeColor, color(0), 0.6)); // Make the border darker and less intense
+  strokeWeight(1);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+JSONObject jsonData;
+
+void setup() {
+  // Set up the canvas
+  size(800, 800);
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+
+  // Set up drawing parameters
+  int hexSize = 30; // Radius of each hexagon
+  int xOffset = 50; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  int columns = 10; // Number of hexagons per row
+  int rows = days.size() / columns; // Calculate number of rows
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to colors
+    color highColor = color(map(high, 15, 40, 0, 255), 0, 0); // Warmer colors for higher temperatures
+    color lowColor = color(0, 0, map(low, 0, 25, 0, 255)); // Cooler colors for lower temperatures
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(2);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+JSONObject jsonData;
+
+void setup() {
+  size(800, 800); // Set the size of your canvas
+  background(255); // Set the background color to white
+
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Set up drawing parameters
+  int hexSize = 30; // Radius of each hexagon
+  int xOffset = 50; // X-axis start offset
+  int yOffset = 50; // Y-axis start offset
+  int columns = 10; // Number of hexagons per row
+  int rows = days.size() / columns; // Calculate number of rows
+  float horizontalSpacing = hexSize * 1.5;
+  float verticalSpacing = sqrt(3) * hexSize;
+
+  // Loop through the data and draw hexagons for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map temperatures to colors
+    color highColor = color(map(high, 15, 40, 0, 255), 0, 0); // Warmer colors for higher temperatures
+    color lowColor = color(0, 0, map(low, 0, 25, 0, 255)); // Cooler colors for lower temperatures
+
+    // Calculate x and y positions for each hexagon
+    int col = i % columns;
+    int row = i / columns;
+    float x = xOffset + col * horizontalSpacing;
+    float y = yOffset + row * verticalSpacing;
+
+    // Offset every other row for a hexagonal layout
+    if (row % 2 == 1) {
+      x += horizontalSpacing / 2;
+    }
+
+    // Draw the hexagon
+    drawHexagon(x, y, hexSize, highColor, lowColor);
+  }
+}
+
+void drawHexagon(float x, float y, float radius, color fillColor, color strokeColor) {
+  // Set fill and stroke colors
+  stroke(strokeColor);
+  strokeWeight(2);
+  fill(fillColor);
+
+  // Draw hexagon
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+2023-01-01: High 27.2°C, Low 20.0°C
+2023-01-02: High 27.7°C, Low 19.0°C
+...
+
+
+JSONObject jsonData;
+
+void setup() {
+  size(600, 600);
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+  
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  // Loop through the array and print the data for each day
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    
+    // Print out each day's data in the console
+    println(date + ": High " + high + "°C, Low " + low + "°C");
+  }
+}
+
+
+import pembroider.*;
+
+PEmbroider embroidery;
+
+void setup() {
+  size(600, 600);
+  embroidery = new PEmbroider(this, "weather_design.pes");
+  embroidery.setStitchDensity(5);
+
+  JSONArray days = jsonData.getJSONArray("days");
+  for (int i = 0; i < days.size() && i < 30; i++) {
+    JSONObject day = days.getJSONObject(i);
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    color highColor = color(map(high, 15, 40, 0, 255), 0, 0);
+    color lowColor = color(0, 0, map(low, 0, 25, 0, 255));
+
+    int x = 50 + (i % 10) * 40;
+    int y = 50 + (i / 10) * 60;
+
+    embroidery.setThreadColor(lowColor);
+    embroidery.beginDraw();
+    drawHexagon(x, y, 20); // Example hexagon size
+    embroidery.endDraw();
+  }
+
+  embroidery.save();
+}
+
+
+void draw() {
+  background(255);
+  // Example visualization for a month's data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  int hexSize = 30; // size of each hexagon
+  int xOffset = 50;
+  int yOffset = 50;
+
+  for (int i = 0; i < days.size() && i < 30; i++) { // Showing just one month for now
+    JSONObject day = days.getJSONObject(i);
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+
+    // Map high and low temperatures to colors
+    color highColor = color(map(high, 15, 40, 0, 255), 0, 0);
+    color lowColor = color(0, 0, map(low, 0, 25, 0, 255));
+
+    // Calculate position for the hexagons
+    int x = xOffset + (i % 10) * (hexSize + 10);
+    int y = yOffset + (i / 10) * (hexSize * 2);
+
+    // Draw hexagon with low temp as border and high temp as fill
+    stroke(lowColor);
+    fill(highColor);
+    drawHexagon(x, y, hexSize);
+  }
+}
+
+void drawHexagon(float x, float y, float radius) {
+  beginShape();
+  for (int i = 0; i < 6; i++) {
+    float angle = TWO_PI / 6 * i;
+    float xOffset = cos(angle) * radius;
+    float yOffset = sin(angle) * radius;
+    vertex(x + xOffset, y + yOffset);
+  }
+  endShape(CLOSE);
+}
+
+
+JSONObject jsonData;
+
+void setup() {
+  size(600, 600);
+  // Load the JSON file from the data folder
+  jsonData = loadJSONObject("sydney_temperature_2023.json");
+  
+  // Get the array of daily data
+  JSONArray days = jsonData.getJSONArray("days");
+  
+  for (int i = 0; i < days.size(); i++) {
+    JSONObject day = days.getJSONObject(i);
+    String date = day.getString("datetime");
+    float high = day.getFloat("tempmax");
+    float low = day.getFloat("tempmin");
+    
+    println(date + ": High " + high + "°C, Low " + low + "°C");
+  }
+}
